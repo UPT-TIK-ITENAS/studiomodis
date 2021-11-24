@@ -17,6 +17,13 @@
     <link rel="stylesheet" href=" {{ asset('assets/libs/bootstrap-icons/font/bootstrap-icons.css') }}">
     <link rel="stylesheet" href=" {{ asset('assets/libs/dropzone/dist/dropzone.css') }}">
     <link href=" {{ asset('assets/libs/@mdi/font/css/materialdesignicons.min.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.25/b-1.7.1/b-html5-1.7.1/b-print-1.7.1/fh-3.1.9/r-2.2.9/datatables.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.1.1/dist/select2-bootstrap-5-theme.min.css" />
     @stack('styles')
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css">
@@ -52,7 +59,14 @@
 
                     <!-- Nav item -->
                     <li class="nav-item">
-                        <div class="navbar-heading">Layouts & Pages</div>
+                        <div class="navbar-heading">Admin</div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="./pages/layout.html">
+                            <i data-feather="sidebar" class="nav-icon icon-xs me-2">
+                            </i>
+                            Ruangan
+                        </a>
                     </li>
 
 
@@ -61,309 +75,26 @@
                         <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"
                             data-bs-target="#navPages" aria-expanded="false" aria-controls="navPages">
                             <i data-feather="layers" class="nav-icon icon-xs me-2">
-                            </i> Pages
+                            </i> Alat
                         </a>
 
                         <div id="navPages" class="collapse " data-bs-parent="#sideNavbar">
                             <ul class="nav flex-column">
                                 <li class="nav-item">
                                     <a class="nav-link " href="./pages/profile.html">
-                                        Profile
+                                        Kategori Alat
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link has-arrow   " href="./pages/settings.html">
-                                        Settings
-                                    </a>
-
-                                </li>
-
-
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./pages/billing.html">
-                                        Billing
-                                    </a>
-                                </li>
-
-
-
-
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./pages/pricing.html">
-                                        Pricing
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./pages/404-error.html">
-                                        404 Error
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                    </li>
-
-
-                    <!-- Nav item -->
-                    <li class="nav-item">
-                        <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"
-                            data-bs-target="#navAuthentication" aria-expanded="false" aria-controls="navAuthentication">
-                            <i data-feather="lock" class="nav-icon icon-xs me-2">
-                            </i> Authentication
-                        </a>
-                        <div id="navAuthentication" class="collapse " data-bs-parent="#sideNavbar">
-                            <ul class="nav flex-column">
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./pages/sign-in.html"> Sign In</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link  " href="./pages/sign-up.html"> Sign Up</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./pages/forget-password.html">
-                                        Forget Password
+                                    <a class="nav-link " href="./pages/profile.html">
+                                        Alat
                                     </a>
                                 </li>
 
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="./pages/layout.html">
-                            <i data-feather="sidebar" class="nav-icon icon-xs me-2">
-                            </i>
-                            Layouts
-                        </a>
-                    </li>
-
-                    <!-- Nav item -->
-                    <li class="nav-item">
-                        <div class="navbar-heading">UI Components</div>
-                    </li>
-
-                    <!-- Nav item -->
-                    <li class="nav-item">
-                        <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"
-                            data-bs-target="#navComponents" aria-expanded="false" aria-controls="navComponents">
-                            <i data-feather="database" class="nav-icon icon-xs me-2">
-                            </i> Components
-                        </a>
-                        <div id="navComponents" class="collapse " data-bs-parent="#sideNavbar">
-                            <ul class="nav flex-column">
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/accordions.html" aria-expanded="false">
-                                        Accordions
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/alerts.html" aria-expanded="false">
-                                        Alerts
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/badge.html" aria-expanded="false">
-                                        Badge
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/breadcrumb.html" aria-expanded="false">
-                                        Breadcrumb
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/button.html" aria-expanded="false">
-                                        Button
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/button-group.html"
-                                        aria-expanded="false">
-                                        Button group
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/card.html" aria-expanded="false">
-                                        Card
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/carousel.html" aria-expanded="false">
-                                        Carousel
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/collapse.html" aria-expanded="false">
-                                        Collapse
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/dropdowns.html" aria-expanded="false">
-                                        Dropdowns
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/forms.html" aria-expanded="false">
-                                        Forms
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/input-group.html"
-                                        aria-expanded="false">
-                                        Input group
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/list-group.html" aria-expanded="false">
-                                        List group
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/modal.html" aria-expanded="false">
-                                        Modal
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/navs.html" aria-expanded="false">
-                                        Navs
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/navbar.html" aria-expanded="false">
-                                        Navbar
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/offcanvas.html" aria-expanded="false">
-                                        Offcanvas
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/pagination.html" aria-expanded="false">
-                                        Pagination
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/popovers.html" aria-expanded="false">
-                                        Popovers
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/progress.html" aria-expanded="false">
-                                        Progress
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="./components/scrollspy.html" aria-expanded="false">
-                                        Scrollspy
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/spinners.html" aria-expanded="false">
-                                        Spinners
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/toasts.html" aria-expanded="false">
-                                        Toasts
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="./components/tooltips.html" aria-expanded="false">
-                                        Tooltips
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="./pages/tables.html">
-                            <i class="nav-icon icon-xs me-2 bi bi-table">
-                            </i>
-                            Tables
-                        </a>
-                    </li>
-
-
-                    <li class="nav-item">
-                        <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"
-                            data-bs-target="#navMenuLevel" aria-expanded="false" aria-controls="navMenuLevel">
-                            <i data-feather="corner-left-down" class="nav-icon icon-xs me-2">
-                            </i> Menu Level
-                        </a>
-                        <div id="navMenuLevel" class="collapse " data-bs-parent="#sideNavbar">
-                            <ul class="nav flex-column">
-                                <li class="nav-item">
-                                    <a class="nav-link has-arrow " href="#!" data-bs-toggle="collapse"
-                                        data-bs-target="#navMenuLevelSecond" aria-expanded="false"
-                                        aria-controls="navMenuLevelSecond">
-                                        Two Level
-                                    </a>
-                                    <div id="navMenuLevelSecond" class="collapse" data-bs-parent="#navMenuLevel">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a class="nav-link " href="#!"> NavItem 1</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link " href="#!"> NavItem 2</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link has-arrow  collapsed  " href="#!" data-bs-toggle="collapse"
-                                        data-bs-target="#navMenuLevelThree" aria-expanded="false"
-                                        aria-controls="navMenuLevelThree">
-                                        Three Level
-                                    </a>
-                                    <div id="navMenuLevelThree" class="collapse " data-bs-parent="#navMenuLevel">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a class="nav-link  collapsed " href="#!" data-bs-toggle="collapse"
-                                                    data-bs-target="#navMenuLevelThreeOne" aria-expanded="false"
-                                                    aria-controls="navMenuLevelThreeOne">
-                                                    NavItem 1
-                                                </a>
-                                                <div id="navMenuLevelThreeOne" class="collapse collapse "
-                                                    data-bs-parent="#navMenuLevelThree">
-                                                    <ul class="nav flex-column">
-                                                        <li class="nav-item">
-                                                            <a class="nav-link " href="#!">
-                                                                NavChild Item 1
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link " href="#!"> Nav Item 2</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <!-- Nav item -->
-                    <li class="nav-item">
-                        <div class="navbar-heading">Documentation</div>
-                    </li>
-
-                    <!-- Nav item -->
-                    <li class="nav-item">
-                        <a class="nav-link has-arrow " href="./docs/index.html">
-                            <i data-feather="clipboard" class="nav-icon icon-xs me-2">
-                            </i> Docs
-                        </a>
-                    </li>
-
-
-
-
                 </ul>
-
             </div>
         </nav>
         <!-- Page content -->
@@ -372,19 +103,13 @@
                 <!-- navbar -->
                 <nav class="navbar-classic navbar navbar-expand-lg">
                     <a id="nav-toggle" href="#"><i data-feather="menu" class="nav-icon me-2 icon-xs"></i></a>
-                    <div class="ms-lg-3 d-none d-md-none d-lg-block">
-                        <!-- Form -->
-                        <form class="d-flex align-items-center">
-                            <input type="search" class="form-control" placeholder="Search" />
-                        </form>
-                    </div>
                     <!--Navbar nav -->
                     <ul class="navbar-nav navbar-right-wrap ms-auto d-flex nav-top-wrap">
 
                         <!-- List -->
                         <li class="dropdown ms-2">
-                            <a class="rounded-circle" href="#" role="button" id="dropdownUser"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="rounded-circle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
                                 <div class="avatar avatar-md avatar-indicators avatar-online">
                                     <img alt="avatar" src=" {{ asset('assets/images/avatar/avatar-1.jpg') }}"
                                         class="rounded-circle" />
@@ -431,126 +156,7 @@
             <!-- Container fluid -->
             <div class="bg-primary pt-10 pb-21"></div>
             <div class="container-fluid mt-n22 px-6">
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-12">
-                        <!-- Page header -->
-                        <div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="mb-2 mb-lg-0">
-                                    <h3 class="mb-0 fw-bold text-white">Projects</h3>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-white">Create New Project</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
-                        <!-- card -->
-                        <div class="card rounded-3">
-                            <!-- card body -->
-                            <div class="card-body">
-                                <!-- heading -->
-                                <div
-                                    class="d-flex justify-content-between align-items-center
-                    mb-3">
-                                    <div>
-                                        <h4 class="mb-0">Projects</h4>
-                                    </div>
-                                    <div
-                                        class="icon-shape icon-md bg-light-primary text-primary
-                      rounded-1">
-                                        <i class="bi bi-briefcase fs-4"></i>
-                                    </div>
-                                </div>
-                                <!-- project number -->
-                                <div>
-                                    <h1 class="fw-bold">18</h1>
-                                    <p class="mb-0"><span class="text-dark me-2">2</span>Completed</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
-                        <!-- card -->
-                        <div class="card rounded-3">
-                            <!-- card body -->
-                            <div class="card-body">
-                                <!-- heading -->
-                                <div
-                                    class="d-flex justify-content-between align-items-center
-                    mb-3">
-                                    <div>
-                                        <h4 class="mb-0">Active Task</h4>
-                                    </div>
-                                    <div
-                                        class="icon-shape icon-md bg-light-primary text-primary
-                      rounded-1">
-                                        <i class="bi bi-list-task fs-4"></i>
-                                    </div>
-                                </div>
-                                <!-- project number -->
-                                <div>
-                                    <h1 class="fw-bold">132</h1>
-                                    <p class="mb-0"><span class="text-dark me-2">28</span>Completed</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
-                        <!-- card -->
-                        <div class="card rounded-3">
-                            <!-- card body -->
-                            <div class="card-body">
-                                <!-- heading -->
-                                <div
-                                    class="d-flex justify-content-between align-items-center
-                    mb-3">
-                                    <div>
-                                        <h4 class="mb-0">Teams</h4>
-                                    </div>
-                                    <div
-                                        class="icon-shape icon-md bg-light-primary text-primary
-                      rounded-1">
-                                        <i class="bi bi-people fs-4"></i>
-                                    </div>
-                                </div>
-                                <!-- project number -->
-                                <div>
-                                    <h1 class="fw-bold">12</h1>
-                                    <p class="mb-0"><span class="text-dark me-2">1</span>Completed</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
-                        <!-- card -->
-                        <div class="card rounded-3">
-                            <!-- card body -->
-                            <div class="card-body">
-                                <!-- heading -->
-                                <div
-                                    class="d-flex justify-content-between align-items-center
-                    mb-3">
-                                    <div>
-                                        <h4 class="mb-0">Productivity</h4>
-                                    </div>
-                                    <div
-                                        class="icon-shape icon-md bg-light-primary text-primary
-                      rounded-1">
-                                        <i class="bi bi-bullseye fs-4"></i>
-                                    </div>
-                                </div>
-                                <!-- project number -->
-                                <div>
-                                    <h1 class="fw-bold">76%</h1>
-                                    <p class="mb-0"><span class="text-success me-2">5%</span>Completed</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @yield('content')
             </div>
         </div>
     </div>
@@ -566,13 +172,17 @@
     <script src=" {{ asset('assets/libs/prismjs/plugins/line-numbers/prism-line-numbers.min.js') }}"></script>
     <script src=" {{ asset('assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
     <script src=" {{ asset('assets/libs/dropzone/dist/min/dropzone.min.js') }}"></script>
-
-    <!-- clipboard -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.25/b-1.7.1/b-html5-1.7.1/b-print-1.7.1/fh-3.1.9/r-2.2.9/datatables.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.5/dist/sweetalert2.all.min.js"
+        integrity="sha256-NHQE05RR3vZ0BO0PeDxbN2N6dknQ7Z4Ch4Vfijn9Y+0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
     <script src="{{ asset('assets/js/index.js') }}"></script>
     @stack('scripts')
-
-    <!-- Theme JS -->
     <script src=" {{ asset('assets/js/theme.min.js') }}"></script>
 
 </body>
