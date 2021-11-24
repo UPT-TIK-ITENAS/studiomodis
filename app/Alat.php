@@ -11,6 +11,6 @@ class Alat extends Model
 
     public function kategori()
     {
-        return $this->belongsTo('App\KategoriAlat');
+        return $this->belongsTo('App\KategoriAlat', 'kategori_alat_id', 'id');
     }
 }

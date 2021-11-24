@@ -28,6 +28,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     Route::get('/ruangan/list', 'Admin\RuanganController@list')->name('ruangan.list');
     Route::resource('ruangan', 'Admin\RuanganController');
+
+    Route::get('/kategori/list', 'Admin\KategoriAlatController@list')->name('kategori.list');
+    Route::resource('kategori', 'Admin\KategoriAlatController');
+
+    Route::get('/alat/list', 'Admin\AlatController@list')->name('alat.list');
+    Route::resource('alat', 'Admin\AlatController');
 });
 
 Route::get('/home', 'HomeController@index')->middleware(['auth', 'user'])->name('home');

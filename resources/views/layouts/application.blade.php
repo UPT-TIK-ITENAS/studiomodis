@@ -81,7 +81,7 @@
                         <div id="navPages" class="collapse " data-bs-parent="#sideNavbar">
                             <ul class="nav flex-column">
                                 <li class="nav-item">
-                                    <a class="nav-link " href="./pages/profile.html">
+                                    <a class="nav-link " href="{{ route('admin.kategori.index') }}">
                                         Kategori Alat
                                     </a>
                                 </li>

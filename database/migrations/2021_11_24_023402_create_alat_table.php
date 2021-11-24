@@ -17,7 +17,7 @@ class CreateAlatTable extends Migration
             $table->id();
             $table->string('nama');
             $table->string('deskripsi');
-            $table->string('stok');
+            $table->integer('stok');
             $table->unsignedBigInteger('kategori_alat_id');
             $table->foreign('kategori_alat_id')->references('id')->on('kategori_alat')->onDelete('cascade');
             $table->tinyInteger('status');

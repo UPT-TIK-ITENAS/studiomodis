@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Ruangan;
+use App\KategoriAlat;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
-class RuanganController extends Controller
+class KategoriAlatController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,13 +16,13 @@ class RuanganController extends Controller
      */
     public function index()
     {
-        return view('admin.ruangan.index');
+        return view('admin.kategori.index');
     }
 
     public function list(Request $request)
     {
         // if ($request->ajax()) {
-        $data = Ruangan::latest()->get();
+        $data = KategoriAlat::latest()->get();
         return DataTables::of($data)
             ->addIndexColumn()
             ->editColumn('created_at', function ($row) {
@@ -31,14 +31,8 @@ class RuanganController extends Controller
             ->editColumn('updated_at', function ($row) {
                 return $row->updated_at->diffForHumans();
             })
-            ->editColumn('status', function ($row) {
-                if ($row->status == 0)
-                    return 'Tidak Aktif';
-                else
-                    return 'Aktif';
-            })
             ->addColumn('action', function ($row) {
-                $edit_url = route('admin.ruangan.edit', $row->id);
+                $edit_url = route('admin.kategori.edit', $row->id);
                 // $show_url = route('admin.role.show', $row->id);
                 $actionBtn = '
                         <a class="btn btn-info" href="' . $edit_url . '">
@@ -62,7 +56,7 @@ class RuanganController extends Controller
      */
     public function create()
     {
-        return view('admin.ruangan.create');
+        return view('admin.kategori.create');
     }
 
     /**
@@ -75,19 +69,13 @@ class RuanganController extends Controller
     {
         $request->validate([
             'nama' => 'required',
-            'no_ruangan' => 'required',
-            'deskripsi' => 'required',
-            'status' => 'required',
         ]);
 
-        Ruangan::create([
+        KategoriAlat::create([
             'nama' => $request->nama,
-            'no_ruangan' => $request->no_ruangan,
-            'deskripsi' => $request->deskripsi,
-            'status' => $request->status,
         ]);
 
-        return redirect()->route('admin.ruangan.index')->with('success', 'Ruangan berhasil dibuat!');
+        return redirect()->route('admin.kategori.index')->with('success', 'Kategori Alat berhasil dibuat!');
     }
 
     /**
@@ -107,9 +95,9 @@ class RuanganController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Ruangan $ruangan)
+    public function edit(KategoriAlat $kategori)
     {
-        return view('admin.ruangan.edit', compact('ruangan'));
+        return view('admin.kategori.edit', compact('kategori'));
     }
 
     /**
@@ -119,23 +107,17 @@ class RuanganController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ruangan $ruangan)
+    public function update(Request $request, KategoriAlat $kategori)
     {
         $request->validate([
-            'nama' => 'required',
-            'no_ruangan' => 'required',
-            'deskripsi' => 'required',
-            'status' => 'required',
+            'nama' => 'required'
         ]);
 
-        $ruangan->update([
-            'nama' => $request->nama,
-            'no_ruangan' => $request->no_ruangan,
-            'deskripsi' => $request->deskripsi,
-            'status' => $request->status,
+        $kategori->update([
+            'nama' => $request->nama
         ]);
 
-        return redirect()->route('admin.ruangan.index')->with('success', 'Ruangan berhasil diubah!');
+        return redirect()->route('admin.kategori.index')->with('success', 'Kategori Alat berhasil diubah!');
     }
 
     /**
@@ -144,9 +126,9 @@ class RuanganController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Ruangan $ruangan)
+    public function destroy(KategoriAlat $kategori)
     {
-        $ruangan->delete();
+        $kategori->delete();
         return response()->json(['status' => TRUE]);
     }
 }

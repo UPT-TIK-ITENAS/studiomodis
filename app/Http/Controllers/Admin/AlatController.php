@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Alat;
 use App\Http\Controllers\Controller;
-use App\Ruangan;
+use App\KategoriAlat;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
-class RuanganController extends Controller
+class AlatController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,13 +17,13 @@ class RuanganController extends Controller
      */
     public function index()
     {
-        return view('admin.ruangan.index');
+        return view('admin.alat.index');
     }
 
     public function list(Request $request)
     {
         // if ($request->ajax()) {
-        $data = Ruangan::latest()->get();
+        $data = Alat::with(['kategori'])->latest()->get();
         return DataTables::of($data)
             ->addIndexColumn()
             ->editColumn('created_at', function ($row) {
@@ -37,8 +38,11 @@ class RuanganController extends Controller
                 else
                     return 'Aktif';
             })
+            ->addColumn('kategori', function ($row) {
+                return $row->kategori->nama;
+            })
             ->addColumn('action', function ($row) {
-                $edit_url = route('admin.ruangan.edit', $row->id);
+                $edit_url = route('admin.alat.edit', $row->id);
                 // $show_url = route('admin.role.show', $row->id);
                 $actionBtn = '
                         <a class="btn btn-info" href="' . $edit_url . '">
@@ -62,7 +66,8 @@ class RuanganController extends Controller
      */
     public function create()
     {
-        return view('admin.ruangan.create');
+        $kategori = KategoriAlat::all();
+        return view('admin.alat.create', compact('kategori'));
     }
 
     /**
@@ -75,19 +80,21 @@ class RuanganController extends Controller
     {
         $request->validate([
             'nama' => 'required',
-            'no_ruangan' => 'required',
+            'stok' => 'required|numeric',
             'deskripsi' => 'required',
+            'kategori_alat_id' => 'required',
             'status' => 'required',
         ]);
 
-        Ruangan::create([
+        Alat::create([
             'nama' => $request->nama,
-            'no_ruangan' => $request->no_ruangan,
+            'stok' => $request->stok,
+            'kategori_alat_id' => $request->kategori_alat_id,
             'deskripsi' => $request->deskripsi,
             'status' => $request->status,
         ]);
 
-        return redirect()->route('admin.ruangan.index')->with('success', 'Ruangan berhasil dibuat!');
+        return redirect()->route('admin.alat.index')->with('success', 'Alat berhasil dibuat!');
     }
 
     /**
@@ -107,9 +114,10 @@ class RuanganController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Ruangan $ruangan)
+    public function edit(Alat $alat)
     {
-        return view('admin.ruangan.edit', compact('ruangan'));
+        $kategori = KategoriAlat::all();
+        return view('admin.alat.edit', compact('alat', 'kategori'));
     }
 
     /**
@@ -119,23 +127,25 @@ class RuanganController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ruangan $ruangan)
+    public function update(Request $request, Alat $alat)
     {
         $request->validate([
             'nama' => 'required',
-            'no_ruangan' => 'required',
+            'stok' => 'required|numeric',
             'deskripsi' => 'required',
+            'kategori_alat_id' => 'required',
             'status' => 'required',
         ]);
 
-        $ruangan->update([
+        $alat->update([
             'nama' => $request->nama,
-            'no_ruangan' => $request->no_ruangan,
+            'stok' => $request->stok,
+            'kategori_alat_id' => $request->kategori_alat_id,
             'deskripsi' => $request->deskripsi,
             'status' => $request->status,
         ]);
 
-        return redirect()->route('admin.ruangan.index')->with('success', 'Ruangan berhasil diubah!');
+        return redirect()->route('admin.alat.index')->with('success', 'Alat berhasil diubah!');
     }
 
     /**
@@ -144,9 +154,9 @@ class RuanganController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Ruangan $ruangan)
+    public function destroy(Alat $alat)
     {
-        $ruangan->delete();
+        $alat->delete();
         return response()->json(['status' => TRUE]);
     }
 }
