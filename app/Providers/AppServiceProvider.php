@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\RuanganCalendarResource;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        RuanganCalendarResource::withoutWrapping();
         Schema::defaultStringLength(191);
     }
 }

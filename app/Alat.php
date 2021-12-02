@@ -13,4 +13,9 @@ class Alat extends Model
     {
         return $this->belongsTo('App\KategoriAlat', 'kategori_alat_id', 'id');
     }
+
+    public function borrow()
+    {
+        return $this->morphToMany(Borrow::class, 'borrowable');
+    }
 }

@@ -36,4 +36,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('alat', 'Admin\AlatController');
 });
 
-Route::get('/home', 'HomeController@index')->middleware(['auth', 'user'])->name('home');
+Route::name('user.')->middleware(['auth', 'user'])->group(function () {
+    Route::get('/home', 'User\HomeController@index')->name('home');
+    Route::get('/check-ruangan', 'User\Peminjaman\RuanganController@checkRuangan')->name('check.ruangan');
+
+    Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
+        Route::get('/alat', 'User\Peminjaman\AlatController@index')->name('alat.index');
+
+        Route::get('/ruangan/list', 'User\Peminjaman\RuanganController@list')->name('ruangan.list');
+        Route::resource('ruangan', 'User\Peminjaman\RuanganController');
+    });
+});

@@ -21,20 +21,20 @@ class KategoriAlatController extends Controller
 
     public function list(Request $request)
     {
-        // if ($request->ajax()) {
-        $data = KategoriAlat::latest()->get();
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->editColumn('created_at', function ($row) {
-                return $row->created_at->diffForHumans();
-            })
-            ->editColumn('updated_at', function ($row) {
-                return $row->updated_at->diffForHumans();
-            })
-            ->addColumn('action', function ($row) {
-                $edit_url = route('admin.kategori.edit', $row->id);
-                // $show_url = route('admin.role.show', $row->id);
-                $actionBtn = '
+        if ($request->ajax()) {
+            $data = KategoriAlat::latest()->get();
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at->diffForHumans();
+                })
+                ->editColumn('updated_at', function ($row) {
+                    return $row->updated_at->diffForHumans();
+                })
+                ->addColumn('action', function ($row) {
+                    $edit_url = route('admin.kategori.edit', $row->id);
+                    // $show_url = route('admin.role.show', $row->id);
+                    $actionBtn = '
                         <a class="btn btn-info" href="' . $edit_url . '">
                             <i class="fa fa-edit"></i>
                         </a>
@@ -42,11 +42,11 @@ class KategoriAlatController extends Controller
                             <i class="fa fa-trash"></i>
                         </a>
                         ';
-                return $actionBtn;
-            })
-            ->rawColumns(['action'])
-            ->make(true);
-        // }
+                    return $actionBtn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
     /**

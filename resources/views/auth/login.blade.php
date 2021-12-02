@@ -21,7 +21,7 @@
 
     <!-- Theme CSS -->
     <link rel="stylesheet" href=" {{ asset('assets/css/theme.min.css') }}">
-    <title>Sign In | Dash Ui - Bootstrap 5 Admin Dashboard Template</title>
+    <title>Login | Studio Modis</title>
 </head>
 
 <body>
@@ -36,10 +36,10 @@
                     <div class="card-body p-6">
                         <div class="mb-4">
                             <a href="#">
-                                <img src="{{ asset('assets/images/brand/logo/logo-primary.svg') }}"
-                                    class="mb-2" alt="">
+                                <h1>STUDIO MODIS</h1>
                             </a>
-                            <p class="mb-6">Please enter your user information.</p>
+                            <p class="mb-6">Masukkan username dan password sesuai akun yang telah ditentukan
+                            </p>
                         </div>
                         <!-- Form -->
                         <form method="POST" action="{{ route('login') }}">
