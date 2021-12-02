@@ -100,6 +100,8 @@ class RuanganController extends Controller
             'begin_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d|after_or_equal:begin_date',
             'id_ruangan' => 'required|numeric',
+            'jam_awal' => 'required|date_format:H:i',
+            'jam_akhir' => 'required|date_format:H:i|after:jam_awal',
             'description' => 'required'
         ]);
 
@@ -107,10 +109,9 @@ class RuanganController extends Controller
         if (!$borrows) {
             return redirect()->route('user.peminjaman.ruangan.create')->with('danger', 'Ruangan telah dibooking, silakan jadwal ulang!');
         }
-
         $peminjaman = Borrow::create([
-            'begin_date' => $request->begin_date,
-            'end_date' => $request->end_date,
+            'begin_date' => $request->begin_date . $request->jam_awal,
+            'end_date' => $request->end_date . $request->jam_akhir,
             'description' => $request->description,
             'status' => 0,
             'user_id' => auth()->user()->id,

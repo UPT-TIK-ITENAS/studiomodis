@@ -134,12 +134,13 @@
                             <div id="nav-peminjaman" class="collapse " data-bs-parent="#sideNavbar">
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('admin.kategori.index') }}">
+                                        <a class="nav-link "
+                                            href="{{ route('user.peminjaman.ruangan.index') }}">
                                             Ruangan
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('admin.alat.index') }}">
+                                        <a class="nav-link " href="{{ route('user.peminjaman.alat.index') }}">
                                             Alat
                                         </a>
                                     </li>

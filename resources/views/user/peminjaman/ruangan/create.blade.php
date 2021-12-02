@@ -89,6 +89,40 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="mb-3 row">
+                                <label for="no_ruangan"
+                                    class="col-sm-3
+                                  col-form-label form-label">Jam
+                                    Awal</label>
+
+                                <div class="col-md-9 col-12">
+                                    <input id="jam_awal" class="form-control @error('jam_awal') is-invalid @enderror"
+                                        type="time" name="jam_awal" placeholder="Masukkan tanggal akhir"
+                                        value="{{ old('jam_awal') }}" required>
+                                    @error('jam_awal')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="no_ruangan"
+                                    class="col-sm-3
+                                  col-form-label form-label">Jam
+                                    Akhir</label>
+
+                                <div class="col-md-9 col-12">
+                                    <input id="jam_akhir" class="form-control @error('jam_akhir') is-invalid @enderror"
+                                        type="time" name="jam_akhir" placeholder="Masukkan tanggal akhir"
+                                        value="{{ old('jam_akhir') }}" required>
+                                    @error('jam_akhir')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="row align-items-center">
                                 <label for="status"
                                     class="col-sm-3
