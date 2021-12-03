@@ -44,6 +44,9 @@ Route::name('user.')->middleware(['auth', 'user'])->group(function () {
         Route::get('/alat', 'User\Peminjaman\AlatController@index')->name('alat.index');
 
         Route::get('/ruangan/list', 'User\Peminjaman\RuanganController@list')->name('ruangan.list');
+        Route::get('/ruangan/alat', 'User\Peminjaman\RuanganController@alat')->name('ruangan.alat');
+        Route::get('/ruangan/alat_list', 'User\Peminjaman\RuanganController@alat_list')->name('ruangan.alat_list');
+        Route::post('/ruangan/alat_cart/{id}', 'User\Peminjaman\RuanganController@alat_cart')->name('ruangan.alat_cart');
         Route::resource('ruangan', 'User\Peminjaman\RuanganController');
     });
 });

@@ -138,7 +138,7 @@
                                 </div>
                                 <!-- list -->
                                 <div class="offset-md-3 col-md-9 col-12 mt-4">
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <button type="submit" class="btn btn-primary">Lanjutkan</button>
                                 </div>
                             </div>
                         </form>
