@@ -45,13 +45,17 @@ Route::name('user.')->middleware(['auth', 'user'])->group(function () {
 
         Route::get('/ruangan/list', 'User\Peminjaman\RuanganController@list')->name('ruangan.list');
         Route::get('/ruangan/alat', 'User\Peminjaman\RuanganController@alat')->name('ruangan.alat');
+        Route::get('/ruangan/alat_show/{id}', 'User\Peminjaman\RuanganController@alat_show')->name('ruangan.alat_show');
         Route::get('/ruangan/confirm', 'User\Peminjaman\RuanganController@confirm')->name('ruangan.confirm');
         Route::post('/ruangan/confirm', 'User\Peminjaman\RuanganController@confirmStore')->name('ruangan.confirmStore');
         Route::get('/ruangan/alat_list/{type}', 'User\Peminjaman\RuanganController@alat_list')->name('ruangan.alat_list');
         Route::post('/ruangan/alat_cart/{id}', 'User\Peminjaman\RuanganController@alat_cart')->name('ruangan.alat_cart');
         Route::put('/ruangan/alat/cart/update', 'User\Peminjaman\RuanganController@updateCart')->name('ruangan.updateCart');
         Route::delete('/ruangan/alat/cart/delete', 'User\Peminjaman\RuanganController@deleteCart')->name('ruangan.deleteCart');
-
         Route::resource('ruangan', 'User\Peminjaman\RuanganController');
+
+
+        Route::get('/alat/list', 'User\Peminjaman\AlatController@list')->name('alat.list');
+        Route::resource('alat', 'User\Peminjaman\AlatController');
     });
 });

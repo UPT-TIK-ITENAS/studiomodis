@@ -9,7 +9,6 @@ use App\Http\Resources\RuanganCalendarResource;
 use App\Ruangan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Cart;
 use Illuminate\Support\Arr;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -316,8 +315,27 @@ class RuanganController extends Controller
         }
     }
 
-    public function show()
+    public function show($id)
     {
+        $borrow = Borrow::with(['ruangan', 'alat'])->findOrFail($id);
+        return view('user.peminjaman.ruangan.show', compact('borrow'));
+    }
+
+    public function alat_show(Request $request, $id)
+    {
+        $borrow = Borrow::with(['alat'])->findOrFail($id);
+        if ($request->ajax()) {
+            return DataTables::of($borrow->alat)
+                ->addIndexColumn()
+                ->addColumn('nama', function ($row) {
+                    return $row->nama;
+                })
+                ->addColumn('qty', function ($row) {
+                    return $row->pivot->qty;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
     public function edit()
