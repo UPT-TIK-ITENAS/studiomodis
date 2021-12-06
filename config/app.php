@@ -170,6 +170,7 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Darryldecode\Cart\CartServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -233,6 +234,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'DataTables' => Yajra\DataTables\DataTablesServiceProvider::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Cart' => Darryldecode\Cart\Facades\CartFacade::class,
+
     ],
 
 ];

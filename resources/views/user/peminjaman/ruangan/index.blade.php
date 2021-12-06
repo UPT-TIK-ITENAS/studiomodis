@@ -7,7 +7,11 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12 col-md-12 col-12">
-            <!-- Page header -->
+            @if (session('success'))
+                <div class="success-session" data-flashdata="{{ session('success') }}"></div>
+            @elseif(session('danger'))
+                <div class="danger-session" data-flashdata="{{ session('danger') }}"></div>
+            @endif
             <div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="mb-2 mb-lg-0">
@@ -60,6 +64,15 @@
                     title: 'Success!',
                     text: flashdatasukses,
                     type: 'success'
+                })
+            }
+            let flashdatadanger = $('.danger-session').data('flashdata');
+            if (flashdatadanger) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: flashdatadanger,
+                    type: 'error'
                 })
             }
         })
@@ -125,7 +138,7 @@
                 if (result.isConfirmed) {
                     let CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                     $.ajax({
-                        url: "{{ url('admin/ruangan') }}/" + id,
+                        url: "{{ url('peminjaman/ruangan') }}/" + id,
                         type: 'POST',
                         data: {
                             _token: CSRF_TOKEN,

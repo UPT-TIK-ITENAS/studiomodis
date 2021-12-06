@@ -12,12 +12,12 @@ class Borrow extends Model
 
     public function alat()
     {
-        return $this->morphedByMany(Alat::class, 'borrowable');
+        return $this->morphedByMany(Alat::class, 'borrowable')->withPivot('qty');
     }
 
     public function ruangan()
     {
-        return $this->morphedByMany(Ruangan::class, 'borrowable');
+        return $this->morphedByMany(Ruangan::class, 'borrowable')->withPivot('qty');
     }
 
     public function user()

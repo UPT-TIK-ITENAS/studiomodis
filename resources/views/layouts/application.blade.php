@@ -120,7 +120,7 @@
                         </li>
                     @else
                         <li class="nav-item">
-                            <a class="nav-link has-arrow  active " href="./index.html">
+                            <a class="nav-link has-arrow  active " href="{{ route('user.home') }}">
                                 <i data-feather="home" class="nav-icon icon-xs me-2"></i> Homepage
                             </a>
                         </li>

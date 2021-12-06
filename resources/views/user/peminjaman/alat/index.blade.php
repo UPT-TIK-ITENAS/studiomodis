@@ -7,132 +7,46 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12 col-md-12 col-12">
-            <!-- Page header -->
+            @if (session('success'))
+                <div class="success-session" data-flashdata="{{ session('success') }}"></div>
+            @elseif(session('danger'))
+                <div class="danger-session" data-flashdata="{{ session('danger') }}"></div>
+            @endif
             <div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="mb-2 mb-lg-0">
-                        <h3 class="mb-0 fw-bold text-white">Projects</h3>
+                        <h3 class="mb-0 fw-bold text-white">Peminjaman Ruangan</h3>
                     </div>
                     <div>
-                        <a href="#" class="btn btn-white">Create New Project</a>
+                        <a href="{{ route('user.peminjaman.ruangan.create') }}" class="btn btn-white">Buat Peminjaman</a>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
-            <!-- card -->
-            <div class="card rounded-3">
-                <!-- card body -->
+        <div class="col-xl-12 mt-6">
+            <div class="card">
                 <div class="card-body">
-                    <!-- heading -->
-                    <div class="d-flex justify-content-between align-items-center
-    mb-3">
-                        <div>
-                            <h4 class="mb-0">Projects</h4>
-                        </div>
-                        <div class="icon-shape icon-md bg-light-primary text-primary
-      rounded-1">
-                            <i class="bi bi-briefcase fs-4"></i>
-                        </div>
+                    <div class=" mb-6">
+                        <h4 class="mb-1">Tabel Ruangan</h4>
                     </div>
-                    <!-- project number -->
-                    <div>
-                        <h1 class="fw-bold">18</h1>
-                        <p class="mb-0"><span class="text-dark me-2">2</span>Completed</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
-            <!-- card -->
-            <div class="card rounded-3">
-                <!-- card body -->
-                <div class="card-body">
-                    <!-- heading -->
-                    <div class="d-flex justify-content-between align-items-center
-    mb-3">
-                        <div>
-                            <h4 class="mb-0">Active Task</h4>
-                        </div>
-                        <div class="icon-shape icon-md bg-light-primary text-primary
-      rounded-1">
-                            <i class="bi bi-list-task fs-4"></i>
-                        </div>
-                    </div>
-                    <!-- project number -->
-                    <div>
-                        <h1 class="fw-bold">132</h1>
-                        <p class="mb-0"><span class="text-dark me-2">28</span>Completed</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
-            <!-- card -->
-            <div class="card rounded-3">
-                <!-- card body -->
-                <div class="card-body">
-                    <!-- heading -->
-                    <div class="d-flex justify-content-between align-items-center
-    mb-3">
-                        <div>
-                            <h4 class="mb-0">Teams</h4>
-                        </div>
-                        <div class="icon-shape icon-md bg-light-primary text-primary
-      rounded-1">
-                            <i class="bi bi-people fs-4"></i>
-                        </div>
-                    </div>
-                    <!-- project number -->
-                    <div>
-                        <h1 class="fw-bold">12</h1>
-                        <p class="mb-0"><span class="text-dark me-2">1</span>Completed</p>
-                    </div>
-                </div>
-            </div>
+                    <div class="table-responsive">
+                        <table class="table" id="ruangan-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Nomor Surat</th>
+                                    <th scope="col">Nama Ruangan</th>
+                                    <th scope="col">Nomor Ruangan</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Dibuat</th>
+                                    <th scope="col">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
 
-        </div>
-        <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
-            <!-- card -->
-            <div class="card rounded-3">
-                <!-- card body -->
-                <div class="card-body">
-                    <!-- heading -->
-                    <div class="d-flex justify-content-between align-items-center
-    mb-3">
-                        <div>
-                            <h4 class="mb-0">Productivity</h4>
-                        </div>
-                        <div class="icon-shape icon-md bg-light-primary text-primary
-      rounded-1">
-                            <i class="bi bi-bullseye fs-4"></i>
-                        </div>
+                        </table>
                     </div>
-                    <!-- project number -->
-                    <div>
-                        <h1 class="fw-bold">76%</h1>
-                        <p class="mb-0"><span class="text-success me-2">5%</span>Completed</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-6 col-md-12 col-12 mt-6">
-            <!-- card -->
-            <div class="card rounded-3">
-                <!-- card body -->
-                <div class="card-body text-center">
-                    <h2>Peminjaman Ruangan</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6 col-md-12 col-12 mt-6">
-            <!-- card -->
-            <div class="card rounded-3">
-                <!-- card body -->
-                <div class="card-body text-center">
-                    <h2>Peminjaman Alat</h2>
                 </div>
             </div>
         </div>
@@ -141,5 +55,115 @@
 
 
 @push('scripts')
+    <script>
+        $(document).ready(function() {
+            let flashdatasukses = $('.success-session').data('flashdata');
+            if (flashdatasukses) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: flashdatasukses,
+                    type: 'success'
+                })
+            }
+            let flashdatadanger = $('.danger-session').data('flashdata');
+            if (flashdatadanger) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: flashdatadanger,
+                    type: 'error'
+                })
+            }
+        })
 
+        let table = $('#ruangan-table').DataTable({
+            fixedHeader: true,
+            pageLength: 25,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('user.peminjaman.ruangan.list') }}",
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false
+                },
+                {
+                    data: 'nomor_surat',
+                    name: 'nomor_surat'
+                },
+                {
+                    data: 'nama_ruangan',
+                    name: 'nama_ruangan'
+                },
+                {
+                    data: 'nomor_ruangan',
+                    name: 'nomor_ruangan'
+                },
+                {
+                    data: 'status',
+                    name: 'status'
+                },
+                {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
+        });
+
+        function reload_table(callback, resetPage = false) {
+            table.ajax.reload(callback, resetPage); //reload datatable ajax 
+        }
+
+        $('#ruangan-table').on('click', '.hapus_record', function(e) {
+            let id = $(this).data('id')
+            let nama = $(this).data('nama')
+            e.preventDefault()
+            Swal.fire({
+                title: 'Apakah Yakin?',
+                text: `Apakah Anda yakin ingin menghapus ruangan dengan nama ${nama}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Hapus'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                    $.ajax({
+                        url: "{{ url('peminjaman/ruangan') }}/" + id,
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            _method: "delete",
+                        },
+                        dataType: 'JSON',
+                        success: function(response) {
+                            Swal.fire(
+                                'Deleted!',
+                                `Ruangan ${nama} berhasil terhapus.`,
+                                'success'
+                            )
+                            reload_table(null, true)
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            Swal.fire({
+                                icon: 'error',
+                                type: 'error',
+                                title: 'Error saat delete data',
+                                showConfirmButton: true
+                            })
+                        }
+                    })
+                }
+            })
+        })
+    </script>
 @endpush

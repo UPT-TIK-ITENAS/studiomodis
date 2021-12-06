@@ -7,6 +7,11 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12 col-md-12 col-12">
+            @if (session('success'))
+                <div class="success-session" data-flashdata="{{ session('success') }}"></div>
+            @elseif(session('danger'))
+                <div class="danger-session" data-flashdata="{{ session('danger') }}"></div>
+            @endif
             <!-- Page header -->
             <div>
                 <div class="d-flex justify-content-between align-items-center">
@@ -14,7 +19,14 @@
                         <h3 class="mb-0 fw-bold text-white">Peminjaman Alat</h3>
                     </div>
                     <div>
-                        <a href="" class="btn btn-white">Keranjang <span id="cart-count">({{ $cart->count() }})</span></a>
+                        <button class="btn btn-white" id="btn-cart" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">Keranjang <span id="cart-count">({{ $cart->count() }})</span>
+                        </button>
+                        @if ($cart->count() > 0)
+                            <a href="{{ route('user.peminjaman.ruangan.confirm') }}" class="btn btn-info text-white">
+                                Konfirmasi
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -50,14 +62,65 @@
 
 
 @push('scripts')
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table" id="cart-table" style="width: 100% !important;">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
+        $(document).ready(function() {
+            let flashdatasukses = $('.success-session').data('flashdata');
+            if (flashdatasukses) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: flashdatasukses,
+                    type: 'success'
+                })
+            }
+            let flashdatadanger = $('.danger-session').data('flashdata');
+            if (flashdatadanger) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: flashdatadanger,
+                    type: 'error'
+                })
+            }
+        })
         let table = $('#alat-table').DataTable({
             fixedHeader: true,
             pageLength: 25,
             responsive: true,
             processing: true,
             serverSide: true,
-            ajax: "{{ route('user.peminjaman.ruangan.alat_list') }}",
+            ajax: "{{ route('user.peminjaman.ruangan.alat_list', 'alat') }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -93,81 +156,6 @@
             let nama = $(this).data('nama')
             let CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
             e.preventDefault();
-            // Swal.fire({
-            //     title: 'Apakah Yakin?',
-            //     text: `Apakah Anda yakin ingin menghapus ruangan dengan nama ${nama}`,
-            //     icon: 'warning',
-            //     showCancelButton: true,
-            //     confirmButtonColor: '#3085d6',
-            //     cancelButtonColor: '#d33',
-            //     confirmButtonText: 'Hapus'
-            // }).then((result) => {
-            //     if (result.isConfirmed) {
-            //         let CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-            //         $.ajax({
-            //             url: "{{ url('admin/ruangan') }}/" + id,
-            //             type: 'POST',
-            //             data: {
-            //                 _token: CSRF_TOKEN,
-            //                 _method: "delete",
-            //             },
-            //             dataType: 'JSON',
-            //             success: function(response) {
-            //                 Swal.fire(
-            //                     'Deleted!',
-            //                     `Ruangan ${nama} berhasil terhapus.`,
-            //                     'success'
-            //                 )
-            //                 reload_table(null, true)
-            //             },
-            //             error: function(jqXHR, textStatus, errorThrown) {
-            //                 Swal.fire({
-            //                     icon: 'error',
-            //                     type: 'error',
-            //                     title: 'Error saat delete data',
-            //                     showConfirmButton: true
-            //                 })
-            //             }
-            //         })
-            //     }
-            // })
-
-            // const {
-            //     value: qty
-            // } = Swal.fire({
-            //     title: name,
-            //     text: 'Masukkan Quantity',
-            //     input: 'text',
-            //     inputAttributes: {
-            //         autocapitalize: 'off'
-            //     },
-            //     showCancelButton: true,
-            //     confirmButtonText: 'Look up',
-            //     showLoaderOnConfirm: true,
-            //     allowOutsideClick: () => !Swal.isLoading()
-            // })
-            // if (qty) {
-            //     $.ajax({
-            //         url: "{{ url('user/ruangan/alat') }}/" + id + "/cart",
-            //         type: 'POST',
-            //         data: {
-            //             _token: CSRF_TOKEN,
-            //         },
-            //         dataType: 'JSON',
-            //         success: function(response) {
-            //             console.log(response)
-            //             reload_table(null, true)
-            //         },
-            //         error: function(jqXHR, textStatus, errorThrown) {
-            //             Swal.fire({
-            //                 icon: 'error',
-            //                 type: 'error',
-            //                 title: 'Error saat memasukkan data',
-            //                 showConfirmButton: true
-            //             })
-            //         }
-            //     })
-            // }
 
             (async () => {
 
@@ -203,7 +191,7 @@
                                     title: "Berhasil Memasukkan Data Ke Keranjang",
                                     showConfirmButton: true
                                 })
-                                $("#cart-count").html("{{ $cart->count() }}")
+                                $("#cart-count").html(`(${response.data})`)
                             } else {
                                 Swal.fire({
                                     icon: 'error',
@@ -227,6 +215,38 @@
                 }
 
             })()
+        })
+        var exampleModalEl = document.getElementById('exampleModal')
+        let cartTable = $('#cart-table').DataTable({
+            fixedHeader: true,
+            pageLength: 25,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('user.peminjaman.ruangan.alat_list', 'cart') }}",
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'quantity',
+                    name: 'quantity'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
+        });
+        exampleModalEl.addEventListener('show.bs.modal', function(event) {
+            cartTable.ajax.reload(null, false)
         })
     </script>
 @endpush
