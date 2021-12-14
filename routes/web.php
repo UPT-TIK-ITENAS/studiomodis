@@ -55,7 +55,17 @@ Route::name('user.')->middleware(['auth', 'user'])->group(function () {
         Route::resource('ruangan', 'User\Peminjaman\RuanganController');
 
 
-        Route::get('/alat/list', 'User\Peminjaman\AlatController@list')->name('alat.list');
+        Route::get('/alat/peminjaman', 'User\Peminjaman\AlatController@peminjaman')->name('alat.peminjaman');
+        Route::post('/alat/peminjaman', 'User\Peminjaman\AlatController@storePeminjaman')->name('alat.storePeminjaman');
+        Route::get('/alat/listPeminjaman', 'User\Peminjaman\AlatController@listPeminjaman')->name('alat.listPeminjaman');
+        Route::get('/alat/alat_show/{id}', 'User\Peminjaman\RuanganController@alat_show')->name('alat.alat_show');
+        Route::get('/alat/list/{type}', 'User\Peminjaman\AlatController@list')->name('alat.list');
+        Route::post('/alat/cart/{id}', 'User\Peminjaman\AlatController@addToCart')->name('alat.addToCart');
+        Route::put('/alat/cart/update', 'User\Peminjaman\AlatController@updateCart')->name('alat.updateCart');
+        Route::delete('/alat/cart/delete', 'User\Peminjaman\AlatController@deleteCart')->name('alat.deleteCart');
+        Route::get('/alat/confirm', 'User\Peminjaman\AlatController@confirm')->name('alat.confirm');
+        Route::post('/alat/confirm', 'User\Peminjaman\AlatController@confirmStore')->name('alat.confirmStore');
+
         Route::resource('alat', 'User\Peminjaman\AlatController');
     });
 });

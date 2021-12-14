@@ -15,10 +15,11 @@
             <div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="mb-2 mb-lg-0">
-                        <h3 class="mb-0 fw-bold text-white">Peminjaman Ruangan</h3>
+                        <h3 class="mb-0 fw-bold text-white">Peminjaman Alat</h3>
                     </div>
                     <div>
-                        <a href="{{ route('user.peminjaman.ruangan.create') }}" class="btn btn-white">Buat Peminjaman</a>
+                        <a href="{{ route('user.peminjaman.alat.create') }}" class="btn btn-white">Buat Peminjaman
+                            Alat</a>
                     </div>
                 </div>
             </div>
@@ -27,16 +28,14 @@
             <div class="card">
                 <div class="card-body">
                     <div class=" mb-6">
-                        <h4 class="mb-1">Tabel Ruangan</h4>
+                        <h4 class="mb-1">Tabel Alat</h4>
                     </div>
                     <div class="table-responsive">
-                        <table class="table" id="ruangan-table">
+                        <table class="table" id="alat-table">
                             <thead>
                                 <tr>
                                     <th scope="col">No</th>
                                     <th scope="col">Nomor Surat</th>
-                                    <th scope="col">Nama Ruangan</th>
-                                    <th scope="col">Nomor Ruangan</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Dibuat</th>
                                     <th scope="col">Aksi</th>
@@ -77,13 +76,13 @@
             }
         })
 
-        let table = $('#ruangan-table').DataTable({
+        let table = $('#alat-table').DataTable({
             fixedHeader: true,
             pageLength: 25,
             responsive: true,
             processing: true,
             serverSide: true,
-            ajax: "{{ route('user.peminjaman.ruangan.list') }}",
+            ajax: "{{ route('user.peminjaman.alat.listPeminjaman') }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -92,14 +91,6 @@
                 {
                     data: 'nomor_surat',
                     name: 'nomor_surat'
-                },
-                {
-                    data: 'nama_ruangan',
-                    name: 'nama_ruangan'
-                },
-                {
-                    data: 'nomor_ruangan',
-                    name: 'nomor_ruangan'
                 },
                 {
                     data: 'status',
@@ -124,11 +115,11 @@
 
         $('#ruangan-table').on('click', '.hapus_record', function(e) {
             let id = $(this).data('id')
-            let nama = $(this).data('nama')
+            let nomor = $(this).data('nomor')
             e.preventDefault()
             Swal.fire({
                 title: 'Apakah Yakin?',
-                text: `Apakah Anda yakin ingin menghapus ruangan dengan nama ${nama}`,
+                text: `Apakah Anda yakin ingin menghapus peminjaman dengan nomor ${nomor}`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -138,7 +129,7 @@
                 if (result.isConfirmed) {
                     let CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                     $.ajax({
-                        url: "{{ url('peminjaman/ruangan') }}/" + id,
+                        url: "{{ url('peminjaman/alat') }}/" + id,
                         type: 'POST',
                         data: {
                             _token: CSRF_TOKEN,
@@ -148,7 +139,7 @@
                         success: function(response) {
                             Swal.fire(
                                 'Deleted!',
-                                `Ruangan ${nama} berhasil terhapus.`,
+                                `Peminjaman dengan nomor ${nomor} berhasil terhapus.`,
                                 'success'
                             )
                             reload_table(null, true)
