@@ -20,6 +20,7 @@ class CreateBorrowsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('description');
+            $table->string('pesan_tolak')->nullable();
             $table->dateTime('begin_date');
             $table->dateTime('end_date');
             $table->timestamp('returned_at')->nullable();

@@ -33,6 +33,7 @@
 
     <!-- Theme CSS -->
     <link rel="stylesheet" href=" {{ asset('assets/css/theme.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
     <title>Homepage | Dash Ui - Bootstrap 5 Admin Dashboard Template</title>
     <script>
@@ -106,7 +107,8 @@
                             <div id="nav-peminjaman" class="collapse " data-bs-parent="#sideNavbar">
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('admin.kategori.index') }}">
+                                        <a class="nav-link "
+                                            href="{{ route('admin.peminjaman.ruangan.index') }}">
                                             Ruangan
                                         </a>
                                     </li>

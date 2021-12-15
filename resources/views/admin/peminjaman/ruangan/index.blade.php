@@ -7,22 +7,24 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12 col-md-12 col-12">
-            <div class="card mb-3">
-                <div class="card-title py-3">
-                    {{ Breadcrumbs::render('admin.ruangan') }}
-                </div>
-            </div>
             @if (session('success'))
                 <div class="success-session" data-flashdata="{{ session('success') }}"></div>
+            @elseif(session('danger'))
+                <div class="danger-session" data-flashdata="{{ session('danger') }}"></div>
             @endif
             <!-- Page header -->
+            <div class="card mb-3">
+                <div class="card-title py-3">
+                    {{ Breadcrumbs::render('admin.peminjaman.ruangan') }}
+                </div>
+            </div>
             <div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="mb-2 mb-lg-0">
-                        <h3 class="mb-0 fw-bold text-white">Ruangan</h3>
+                        <h3 class="mb-0 fw-bold text-white">Peminjaman Ruangan</h3>
                     </div>
                     <div>
-                        <a href="{{ route('admin.ruangan.create') }}" class="btn btn-white">Tambah Ruangan</a>
+                        <a href="{{ route('admin.peminjaman.ruangan.create') }}" class="btn btn-white">Buat Peminjaman</a>
                     </div>
                 </div>
             </div>
@@ -37,10 +39,10 @@
                         <table class="table" id="ruangan-table">
                             <thead>
                                 <tr>
-                                    <th scope="col">Nomor</th>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Nomor Surat</th>
                                     <th scope="col">Nama Ruangan</th>
                                     <th scope="col">Nomor Ruangan</th>
-                                    <th scope="col">Deskripsi</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Dibuat</th>
                                     <th scope="col">Aksi</th>
@@ -54,7 +56,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 @endsection
 
@@ -71,6 +72,15 @@
                     type: 'success'
                 })
             }
+            let flashdatadanger = $('.danger-session').data('flashdata');
+            if (flashdatadanger) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: flashdatadanger,
+                    type: 'error'
+                })
+            }
         })
 
         let table = $('#ruangan-table').DataTable({
@@ -79,23 +89,23 @@
             responsive: true,
             processing: true,
             serverSide: true,
-            ajax: "{{ route('admin.ruangan.list') }}",
+            ajax: "{{ route('admin.peminjaman.ruangan.list') }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
                     orderable: false
                 },
                 {
-                    data: 'nama',
-                    name: 'nama'
+                    data: 'nomor_surat',
+                    name: 'nomor_surat'
                 },
                 {
-                    data: 'no_ruangan',
-                    name: 'no_ruangan'
+                    data: 'nama_ruangan',
+                    name: 'nama_ruangan'
                 },
                 {
-                    data: 'deskripsi',
-                    name: 'deskripsi'
+                    data: 'nomor_ruangan',
+                    name: 'nomor_ruangan'
                 },
                 {
                     data: 'status',
@@ -134,7 +144,7 @@
                 if (result.isConfirmed) {
                     let CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                     $.ajax({
-                        url: "{{ url('admin/ruangan') }}/" + id,
+                        url: "{{ url('peminjaman/ruangan') }}/" + id,
                         type: 'POST',
                         data: {
                             _token: CSRF_TOKEN,

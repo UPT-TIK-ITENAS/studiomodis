@@ -23,6 +23,8 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::get('/check-ruangan', 'RuanganCheck')->name('check.ruangan');
+
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/home', 'Admin\HomeController@index')->name('home');
 
@@ -34,11 +36,26 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     Route::get('/alat/list', 'Admin\AlatController@list')->name('alat.list');
     Route::resource('alat', 'Admin\AlatController');
+
+    Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
+        Route::resource('alat', 'Admin\Peminjaman\AlatController');
+
+        Route::get('/ruangan/confirm', 'Admin\Peminjaman\RuanganController@confirm')->name('ruangan.confirm');
+        Route::post('/ruangan/confirm', 'Admin\Peminjaman\RuanganController@confirmStore')->name('ruangan.confirmStore');
+        Route::get('/ruangan/alat_list/{type}', 'Admin\Peminjaman\RuanganController@alat_list')->name('ruangan.alat_list');
+        Route::post('/ruangan/alat_cart/{id}', 'Admin\Peminjaman\RuanganController@alat_cart')->name('ruangan.alat_cart');
+        Route::put('/ruangan/alat/cart/update', 'Admin\Peminjaman\RuanganController@updateCart')->name('ruangan.updateCart');
+        Route::delete('/ruangan/alat/cart/delete', 'Admin\Peminjaman\RuanganController@deleteCart')->name('ruangan.deleteCart');
+        Route::get('/ruangan/alat', 'Admin\Peminjaman\RuanganController@alat')->name('ruangan.alat');
+        Route::post('/ruangan/{ruangan}/status', 'Admin\Peminjaman\RuanganController@status')->name('ruangan.status');
+        Route::get('/ruangan/list', 'Admin\Peminjaman\RuanganController@list')->name('ruangan.list');
+        Route::get('/ruangan/alat_show/{id}', 'Admin\Peminjaman\RuanganController@alat_show')->name('ruangan.alat_show');
+        Route::resource('ruangan', 'Admin\Peminjaman\RuanganController');
+    });
 });
 
 Route::name('user.')->middleware(['auth', 'user'])->group(function () {
     Route::get('/home', 'User\HomeController@index')->name('home');
-    Route::get('/check-ruangan', 'User\Peminjaman\RuanganController@checkRuangan')->name('check.ruangan');
 
     Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
         Route::get('/alat', 'User\Peminjaman\AlatController@index')->name('alat.index');

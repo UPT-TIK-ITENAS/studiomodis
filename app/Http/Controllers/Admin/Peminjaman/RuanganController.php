@@ -1,28 +1,33 @@
 <?php
 
-namespace App\Http\Controllers\User\Peminjaman;
+namespace App\Http\Controllers\Admin\Peminjaman;
 
 use App\Alat;
-use App\Borrow;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Resources\RuanganCalendarResource;
 use App\Ruangan;
+use App\Borrow;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Yajra\DataTables\Facades\DataTables;
 
 class RuanganController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        return view('user.peminjaman.ruangan.index');
+        return view('admin.peminjaman.ruangan.index');
     }
 
     public function list(Request $request)
     {
         if ($request->ajax()) {
-            $data = Borrow::with(['ruangan'])->whereHas('ruangan')->latest()->where('user_id', auth()->user()->id)->get();
+            $data = Borrow::with(['ruangan'])->whereHas('ruangan')->latest()->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('created_at', function ($row) {
@@ -41,10 +46,9 @@ class RuanganController extends Controller
                     return $row->ruangan[0]->no_ruangan;
                 })
                 ->addColumn('action', function ($row) {
-                    $show_url = route('user.peminjaman.ruangan.show', $row->id);
+                    $show_url = route('admin.peminjaman.ruangan.show', $row->id);
                     // $show_url = route('admin.role.show', $row->id);
-                    if ($row->status == 0) {
-                        $actionBtn = '
+                    $actionBtn = '
                             <a class="btn btn-secondary btn-sm" href="' . $show_url . '">
                                 <i class="fa fa-eye"></i>
                             </a>
@@ -52,13 +56,7 @@ class RuanganController extends Controller
                                 <i class="fa fa-trash"></i>
                             </a>
                             ';
-                    } else if ($row->status == 1 || $row->status == 2) {
-                        $actionBtn = '
-                        <a class="btn btn-secondary btn-sm" href="' . $show_url . '">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        ';
-                    }
+
                     return $actionBtn;
                 })
                 ->rawColumns(['action'])
@@ -66,12 +64,23 @@ class RuanganController extends Controller
         }
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
         $ruangan = Ruangan::where('status', 1)->get();
-        return view('user.peminjaman.ruangan.create', compact('ruangan'));
+        return view('admin.peminjaman.ruangan.create', compact('ruangan'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -86,31 +95,31 @@ class RuanganController extends Controller
         $borrows = Borrow::with('ruangan')->checkAvailability($request->id_ruangan, $request->begin_date, $request->end_date)->count() == 0;
         $ruangan = Ruangan::find($request->id_ruangan);
         if (!$borrows) {
-            return redirect()->route('user.peminjaman.ruangan.create')->with('danger', 'Ruangan telah dibooking, silakan jadwal ulang!');
+            return redirect()->route('admin.peminjaman.ruangan.create')->with('danger', 'Ruangan telah dibooking, silakan jadwal ulang!');
         }
         $peminjaman_ruangan = $request->all();
         $peminjaman_ruangan = Arr::except($peminjaman_ruangan, '_token');
         $peminjaman_ruangan = Arr::add($peminjaman_ruangan, 'nama_ruangan', $ruangan->nama);
         $peminjaman_ruangan = Arr::add($peminjaman_ruangan, 'nomor_ruangan', $ruangan->no_ruangan);
-        session()->put('peminjaman_ruangan', $peminjaman_ruangan);
-        return redirect()->route('user.peminjaman.ruangan.alat')->with('success', 'Silakan pilih Alat yang akan dipinjam!');
+        session()->put('peminjaman_ruangan_admin', $peminjaman_ruangan);
+        return redirect()->route('admin.peminjaman.ruangan.alat')->with('success', 'Silakan pilih Alat yang akan dipinjam!');
     }
 
     public function alat()
     {
-        if (session()->get('peminjaman_ruangan')) {
+        if (session()->get('peminjaman_ruangan_admin')) {
             $alat = Alat::where('status', 1)->get();
-            $peminjaman_ruangan = session()->get('peminjaman_ruangan');
+            $peminjaman_ruangan = session()->get('peminjaman_ruangan_admin');
             $cart = \Cart::session(auth()->user()->id)->getContent();
-            return view('user.peminjaman.ruangan.alat', compact('peminjaman_ruangan', 'alat', 'cart'));
+            return view('admin.peminjaman.ruangan.alat', compact('peminjaman_ruangan', 'alat', 'cart'));
         } else {
-            return redirect()->route('user.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan terlebih dahulu!');
+            return redirect()->route('admin.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan terlebih dahulu!');
         }
     }
 
     public function alat_cart(Request $request, $id)
     {
-        if (session()->get('peminjaman_ruangan')) {
+        if (session()->get('peminjaman_ruangan_admin')) {
             $request->validate([
                 'qty' => 'required|numeric',
             ]);
@@ -134,7 +143,7 @@ class RuanganController extends Controller
 
             return response()->json(['status' => TRUE, 'message' => 'Berhasil Memasukkan Data Ke Keranjang', 'data' => \Cart::session($user_id)->getContent()->count()]);
         } else {
-            return redirect()->route('user.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan terlebih dahulu!');
+            return redirect()->route('admin.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan terlebih dahulu!');
         }
     }
 
@@ -143,8 +152,8 @@ class RuanganController extends Controller
         if ($request->ajax()) {
             if ($type == "cart") {
                 $csrf_field = csrf_field();
-                $url_update = route('user.peminjaman.ruangan.updateCart');
-                $url_delete = route('user.peminjaman.ruangan.deleteCart');
+                $url_update = route('admin.peminjaman.ruangan.updateCart');
+                $url_delete = route('admin.peminjaman.ruangan.deleteCart');
                 return DataTables::of(\Cart::session(auth()->user()->id)->getContent())
                     ->addIndexColumn()
                     ->editColumn('quantity', function ($row) use ($csrf_field, $url_update) {
@@ -224,10 +233,10 @@ class RuanganController extends Controller
         // dd($request->all());
         $alat = Alat::with(['kategori'])->find($request->id);
         if ($alat->stok < 1) {
-            return redirect()->route('user.peminjaman.ruangan.alat')->with('danger', 'Stok habis!');
+            return redirect()->route('admin.peminjaman.ruangan.alat')->with('danger', 'Stok habis!');
         }
         if ($request->quantity > $alat->stok) {
-            return redirect()->route('user.peminjaman.ruangan.alat')->with('danger', 'Quantity melebihi stok!');
+            return redirect()->route('admin.peminjaman.ruangan.alat')->with('danger', 'Quantity melebihi stok!');
         }
 
         \Cart::session(auth()->user()->id)->update($request->id, [
@@ -237,7 +246,7 @@ class RuanganController extends Controller
             ],
         ]);
 
-        return redirect()->route('user.peminjaman.ruangan.alat')->with('success', 'Berhasil mengupdate cart!');
+        return redirect()->route('admin.peminjaman.ruangan.alat')->with('success', 'Berhasil mengupdate cart!');
     }
 
     public function deleteCart(Request $request)
@@ -248,27 +257,27 @@ class RuanganController extends Controller
 
         \Cart::session(auth()->user()->id)->remove($request->id);
 
-        return redirect()->route('user.peminjaman.ruangan.alat')->with('success', 'Berhasil menghapus item pada cart!');
+        return redirect()->route('admin.peminjaman.ruangan.alat')->with('success', 'Berhasil menghapus item pada cart!');
     }
 
     public function confirm()
     {
-        if (session()->get('peminjaman_ruangan')) {
+        if (session()->get('peminjaman_ruangan_admin')) {
             $peminjaman_alat = \Cart::session(auth()->user()->id)->getContent();
-            session()->put('peminjaman_alat', $peminjaman_alat);
-            $peminjaman_ruangan = session()->get('peminjaman_ruangan');
+            session()->put('peminjaman_alat_admin', $peminjaman_alat);
+            $peminjaman_ruangan = session()->get('peminjaman_ruangan_admin');
             // dd($peminjaman_ruangan);
-            return view('user.peminjaman.ruangan.confirm', compact('peminjaman_alat', 'peminjaman_ruangan'));
+            return view('admin.peminjaman.ruangan.confirm', compact('peminjaman_alat_admin', 'peminjaman_ruangan'));
         } else {
-            return redirect()->route('user.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan dan alat terlebih dahulu!');
+            return redirect()->route('admin.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan dan alat terlebih dahulu!');
         }
     }
 
     public function confirmStore(Request $request)
     {
-        if (session()->get('peminjaman_ruangan') || session()->get('peminjaman_alat')) {
-            $peminjaman_ruangan = session()->get('peminjaman_ruangan');
-            $peminjaman_alat = session()->get('peminjaman_alat');
+        if (session()->get('peminjaman_ruangan_admin') || session()->get('peminjaman_alat_admin')) {
+            $peminjaman_ruangan = session()->get('peminjaman_ruangan_admin');
+            $peminjaman_alat = session()->get('peminjaman_alat_admin');
             $peminjaman_alat = $peminjaman_alat->toArray();
             $peminjaman = Borrow::create([
                 'begin_date' => $peminjaman_ruangan['begin_date'] . " "  . $peminjaman_ruangan['jam_awal'],
@@ -291,17 +300,23 @@ class RuanganController extends Controller
                     'stok' => $alat->stok - $pa['quantity']
                 ]);
             }
-            session()->forget(['peminjaman_ruangan', 'peminjaman_alat']);
-            return redirect()->route('user.peminjaman.ruangan.index')->with('success', 'Berhasil booking ruangan dan alat!');
+            session()->forget(['peminjaman_ruangan_admin', 'peminjaman_alat_admin']);
+            return redirect()->route('admin.peminjaman.ruangan.index')->with('success', 'Berhasil booking ruangan dan alat!');
         } else {
-            return redirect()->route('user.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan dan alat terlebih dahulu!');
+            return redirect()->route('admin.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan dan alat terlebih dahulu!');
         }
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
         $borrow = Borrow::with(['ruangan', 'alat'])->whereHas('ruangan')->findOrFail($id);
-        return view('user.peminjaman.ruangan.show', compact('borrow'));
+        return view('admin.peminjaman.ruangan.show', compact('borrow'));
     }
 
     public function alat_show(Request $request, $id)
@@ -321,24 +336,51 @@ class RuanganController extends Controller
         }
     }
 
-    public function edit()
+    public function status(Request $request, $id)
     {
+        $request->validate([
+            'status' => 'required|numeric'
+        ]);
+        // dd($request->status);
+        $borrow = Borrow::findOrFail($id);
+        $borrow->update([
+            'status' => ($request->status == "1" ? $request->status : 1)
+        ]);
+
+        return redirect()->back()->with('success', 'Status berhasil diubah!');
     }
 
-    public function update()
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
     {
+        //
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
-        $borrow = Borrow::with(['ruangan', 'alat'])->findOrFail($id);
-        foreach ($borrow->alat as $alat) {
-            $alat_f = Alat::find($alat->id);
-            $alat_f->update([
-                'stok' => $alat_f->stok + $alat->pivot->qty
-            ]);
-        }
-        $borrow->delete();
-        return response()->json(['status' => TRUE]);
+        //
     }
 }

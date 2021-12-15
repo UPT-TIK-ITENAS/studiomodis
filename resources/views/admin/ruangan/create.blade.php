@@ -8,6 +8,11 @@
     <div class="row">
         <div class="col-lg-12 col-md-12 col-12">
             <!-- Page header -->
+            <div class="card mb-3">
+                <div class="card-title py-3">
+                    {{ Breadcrumbs::render('admin.ruangan.create') }}
+                </div>
+            </div>
             <div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="mb-2 mb-lg-0">
