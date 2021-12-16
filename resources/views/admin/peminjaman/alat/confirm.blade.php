@@ -19,7 +19,7 @@
                         <h3 class="mb-0 fw-bold text-white">Konfirmasi Peminjaman</h3>
                     </div>
                     <div>
-                        <form action="{{ route('user.peminjaman.ruangan.confirmStore') }}" method="POST">
+                        <form action="{{ route('admin.peminjaman.ruangan.confirmStore') }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-success text-white">
                                 Selesai
@@ -91,7 +91,7 @@
             responsive: true,
             processing: true,
             serverSide: true,
-            ajax: "{{ route('user.peminjaman.ruangan.alat_list', 'confirm') }}",
+            ajax: "{{ route('admin.peminjaman.ruangan.alat_list', 'confirm') }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',

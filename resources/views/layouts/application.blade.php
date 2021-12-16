@@ -35,7 +35,7 @@
     <link rel="stylesheet" href=" {{ asset('assets/css/theme.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
-    <title>Homepage | Dash Ui - Bootstrap 5 Admin Dashboard Template</title>
+    <title>Homepage | Studio Modis</title>
     <script>
         window.baseurl = "{{ url('') }}"
     </script>
@@ -49,7 +49,7 @@
             <div class="nav-scroller">
                 <!-- Brand logo -->
                 <a class="navbar-brand" href="./index.html">
-                    <img src=" {{ asset('assets/images/brand/logo/logo.svg') }}" alt="" />
+                    <p>STUDIO MODIS</p>
                 </a>
                 <!-- Navbar nav -->
                 <ul class="navbar-nav flex-column" id="sideNavbar">
@@ -60,7 +60,6 @@
                             </a>
 
                         </li>
-
 
                         <!-- Nav item -->
                         <li class="nav-item">

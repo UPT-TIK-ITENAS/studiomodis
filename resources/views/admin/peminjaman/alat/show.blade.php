@@ -16,54 +16,82 @@
             <div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="mb-2 mb-lg-0">
-                        <h3 class="mb-0 fw-bold text-white">Konfirmasi Peminjaman</h3>
+                        <h3 class="mb-0 fw-bold text-white">Peminjaman</h3>
                     </div>
-                    <div>
-                        <form action="{{ route('user.peminjaman.ruangan.confirmStore') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-success text-white">
-                                Selesai
-                            </button>
-                        </form>
-                    </div>
+                    @if ($borrow->status == 1)
+                        <div>
+                            <form action="" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success text-white">
+                                    Kembalikan Alat
+                                </button>
+                            </form>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
         <div class="col-xl-12 mt-6">
             <div class="card">
                 <div class="card-body">
-                    <div class=" mb-6">
-                        <h4 class="mb-1">Detail Ruangan</h4>
+                    <div class="mt-4">
+                        <h4 class="mb-1">Detail Peminjaman</h4>
                     </div>
 
                     <div>
                         <div class="mb-3 row align-items-center">
+                            <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Nomor Surat</label>
+                            <div class="col-md-9 col-12 col-form-label form-label">
+                                <p class="mb-0">
+                                    {{ $borrow->nomor_surat }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Status</label>
+                            <div class="col-md-9 col-12 col-form-label form-label">
+                                @if ($borrow->status == 0)
+                                    <span class="badge rounded-pill bg-warning">
+                                        Menunggu
+                                    </span>
+                                @elseif($borrow->status == 1)
+                                    <span class="badge rounded-pill bg-success">
+                                        Disetujui
+                                    </span>
+                                @elseif($borrow->status == 2)
+                                    <span class="badge rounded-pill bg-danger">
+                                        Tidak Disetujui
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
                             <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Deskripsi</label>
                             <div class="col-md-9 col-12 col-form-label form-label">
-                                <p class="mb-0">{{ $peminjaman_alat['description'] }}</p>
+                                <p class="mb-0">{{ $borrow->description }}</p>
                             </div>
                         </div>
                         <div class="mb-3 row align-items-center">
                             <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Tanggal Awal</label>
                             <div class="col-md-9 col-12 col-form-label form-label">
                                 <p class="mb-0">
-                                    {{ $peminjaman_alat['begin_date'] . ' ' . $peminjaman_alat['jam_awal'] }}</p>
+                                    {{ $borrow->begin_date }}</p>
                             </div>
                         </div>
                         <div class="mb-3 row align-items-center">
                             <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Tanggal Akhir</label>
                             <div class="col-md-9 col-12 col-form-label form-label">
                                 <p class="mb-0">
-                                    {{ $peminjaman_alat['end_date'] . ' ' . $peminjaman_alat['jam_akhir'] }}</p>
+                                    {{ $borrow->end_date }}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class=" mb-6">
+                    <div class="mt-4">
                         <h4 class="mb-1">Detail Alat</h4>
                     </div>
                     <div class="table-responsive">
-                        <table class="table" id="cart-table" style="width: 100% !important;">
+                        <table class="table" id="alat-table" style="width: 100% !important;">
                             <thead>
                                 <tr>
                                     <th scope="col">No</th>
@@ -85,25 +113,25 @@
 
 @push('scripts')
     <script>
-        let cartTable = $('#cart-table').DataTable({
+        let alatTable = $('#alat-table').DataTable({
             fixedHeader: true,
             pageLength: 25,
             responsive: true,
             processing: true,
             serverSide: true,
-            ajax: "{{ route('user.peminjaman.ruangan.alat_list', 'confirm') }}",
+            ajax: "{{ route('admin.peminjaman.alat.alat_show', $borrow->id) }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
                     orderable: false
                 },
                 {
-                    data: 'name',
-                    name: 'name'
+                    data: 'nama',
+                    name: 'nama'
                 },
                 {
-                    data: 'quantity',
-                    name: 'quantity'
+                    data: 'qty',
+                    name: 'qty'
                 },
             ]
         });

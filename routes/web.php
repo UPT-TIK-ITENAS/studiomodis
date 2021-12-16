@@ -38,6 +38,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('alat', 'Admin\AlatController');
 
     Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
+        Route::get('/alat/peminjaman', 'Admin\Peminjaman\AlatController@peminjaman')->name('alat.peminjaman');
+        Route::post('/alat/peminjaman', 'Admin\Peminjaman\AlatController@storePeminjaman')->name('alat.storePeminjaman');
+        Route::get('/alat/listPeminjaman', 'Admin\Peminjaman\AlatController@listPeminjaman')->name('alat.listPeminjaman');
+        Route::get('/alat/alat_show/{id}', 'Admin\Peminjaman\RuanganController@alat_show')->name('alat.alat_show');
+        Route::get('/alat/list/{type}', 'Admin\Peminjaman\AlatController@list')->name('alat.list');
+        Route::post('/alat/cart/{id}', 'Admin\Peminjaman\AlatController@addToCart')->name('alat.addToCart');
+        Route::put('/alat/cart/update', 'Admin\Peminjaman\AlatController@updateCart')->name('alat.updateCart');
+        Route::delete('/alat/cart/delete', 'Admin\Peminjaman\AlatController@deleteCart')->name('alat.deleteCart');
+        Route::get('/alat/confirm', 'Admin\Peminjaman\AlatController@confirm')->name('alat.confirm');
+        Route::post('/alat/confirm', 'Admin\Peminjaman\AlatController@confirmStore')->name('alat.confirmStore');
+
         Route::resource('alat', 'Admin\Peminjaman\AlatController');
 
         Route::get('/ruangan/confirm', 'Admin\Peminjaman\RuanganController@confirm')->name('ruangan.confirm');
