@@ -16,6 +16,6 @@ class Alat extends Model
 
     public function borrow()
     {
-        return $this->morphToMany(Borrow::class, 'borrowable');
+        return $this->morphToMany(Borrow::class, 'borrowable')->withPivot('qty');
     }
 }

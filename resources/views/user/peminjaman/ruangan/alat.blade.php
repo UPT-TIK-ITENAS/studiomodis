@@ -36,6 +36,8 @@
                 <div class="card-body">
                     <div class=" mb-6">
                         <h4 class="mb-1">Tabel Alat</h4>
+                        <p>Alat yang tersedia periode tanggal {{ $peminjaman_ruangan['begin_date'] }} hingga
+                            {{ $peminjaman_ruangan['end_date'] }}</p>
                     </div>
                     <div class="table-responsive">
                         <table class="table" id="alat-table">

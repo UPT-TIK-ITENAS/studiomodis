@@ -48,6 +48,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::delete('/alat/cart/delete', 'Admin\Peminjaman\AlatController@deleteCart')->name('alat.deleteCart');
         Route::get('/alat/confirm', 'Admin\Peminjaman\AlatController@confirm')->name('alat.confirm');
         Route::post('/alat/confirm', 'Admin\Peminjaman\AlatController@confirmStore')->name('alat.confirmStore');
+        Route::post('/alat/{alat}/status', 'Admin\Peminjaman\AlatController@status')->name('alat.status');
 
         Route::resource('alat', 'Admin\Peminjaman\AlatController');
 

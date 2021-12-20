@@ -5,8 +5,10 @@ namespace App\Http\Controllers\User\Peminjaman;
 use App\Borrow;
 use App\Alat;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Darryldecode\Cart\Facades\CartFacade as Cart;
 use Yajra\DataTables\Facades\DataTables;
 
 class AlatController extends Controller
@@ -33,14 +35,14 @@ class AlatController extends Controller
 
         $peminjaman = $request->all();
         $peminjaman = Arr::except($peminjaman, '_token');
-        session()->put('peminjaman', $peminjaman);
+        session()->put('peminjaman_' . auth()->user()->id, $peminjaman);
         return redirect()->route('user.peminjaman.alat.create')->with('success', 'Silakan pilih Alat yang akan dipinjam!');
     }
 
     public function listPeminjaman(Request $request)
     {
         if ($request->ajax()) {
-            $data = Borrow::with(['alat'])->whereHas('alat')->latest()->where('user_id', auth()->user()->id)->get();
+            $data = Borrow::with(['alat', 'ruangan'])->whereHas('alat')->whereDoesntHave('ruangan')->latest()->where('user_id', auth()->user()->id)->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('created_at', function ($row) {
@@ -79,15 +81,16 @@ class AlatController extends Controller
 
     public function list(Request $request, $type)
     {
-        if ($request->ajax()) {
-            if ($type == "cart") {
-                $csrf_field = csrf_field();
-                $url_update = route('user.peminjaman.alat.updateCart');
-                $url_delete = route('user.peminjaman.alat.deleteCart');
-                return DataTables::of(\Cart::session(auth()->user()->id)->getContent())
-                    ->addIndexColumn()
-                    ->editColumn('quantity', function ($row) use ($csrf_field, $url_update) {
-                        $actionBtn = "
+        $peminjaman = session()->get('peminjaman_' . auth()->user()->id);
+        // if ($request->ajax()) {
+        if ($type == "cart") {
+            $csrf_field = csrf_field();
+            $url_update = route('user.peminjaman.alat.updateCart');
+            $url_delete = route('user.peminjaman.alat.deleteCart');
+            return DataTables::of(Cart::session(auth()->user()->id)->getContent())
+                ->addIndexColumn()
+                ->editColumn('quantity', function ($row) use ($csrf_field, $url_update) {
+                    $actionBtn = "
                         <form action='$url_update' method='POST'>
                             $csrf_field
                             <input name='_method' value='PUT' type='hidden'>
@@ -98,10 +101,10 @@ class AlatController extends Controller
                             </div>
                         </form>
                         ";
-                        return $actionBtn;
-                    })
-                    ->addColumn('action', function ($row) use ($csrf_field, $url_delete) {
-                        $actionBtn = "
+                    return $actionBtn;
+                })
+                ->addColumn('action', function ($row) use ($csrf_field, $url_delete) {
+                    $actionBtn = "
                             <form action='$url_delete' method='POST'>
                                 $csrf_field
                                 <input name='_method' value='DELETE' type='hidden'>
@@ -111,40 +114,56 @@ class AlatController extends Controller
                                 </button>
                             </form>
                             ";
-                        return $actionBtn;
-                    })
-                    ->rawColumns(['action', 'quantity'])
-                    ->make(true);
-            } else if ($type == "alat") {
-                $data = Alat::with(['kategori'])->latest()->get();
-                return DataTables::of($data)
-                    ->addIndexColumn()
-                    ->editColumn('created_at', function ($row) {
-                        return $row->created_at->diffForHumans();
-                    })
-                    ->editColumn('updated_at', function ($row) {
-                        return $row->updated_at->diffForHumans();
-                    })
-                    ->addColumn('kategori', function ($row) {
-                        return $row->kategori->nama;
-                    })
-                    ->addColumn('action', function ($row) {
-                        $actionBtn = '
+                    return $actionBtn;
+                })
+                ->rawColumns(['action', 'quantity'])
+                ->make(true);
+        } else if ($type == "alat") {
+            $data = Alat::with(['kategori'])->latest()->get();
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('stok', function ($row) use ($peminjaman) {
+                    $alat = Alat::with(['borrow' => function ($query) use ($peminjaman) {
+                        $query->whereDate('end_date', '>=', $peminjaman['begin_date'])->whereDate('begin_date', '<=', $peminjaman['end_date']);
+                    }])->where('id', $row->id)->first();
+                    if ($alat->borrow->count() == 0) {
+                        return $row->stok;
+                    } else {
+                        $stok = $row->stok;
+                        foreach ($alat->borrow as $borrow) {
+                            if ($borrow->pivot->borrowable_id == $alat->id) {
+                                $stok -= $borrow->pivot->qty;
+                            }
+                        }
+                        return $stok;
+                    }
+                })
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at->diffForHumans();
+                })
+                ->editColumn('updated_at', function ($row) {
+                    return $row->updated_at->diffForHumans();
+                })
+                ->addColumn('kategori', function ($row) {
+                    return $row->kategori->nama;
+                })
+                ->addColumn('action', function ($row) {
+                    $actionBtn = '
                             <a class="btn btn-primary stock" href="" data-id="' . $row->id . '" data-nama="' . $row->nama . '" >
                                 <i class="fa fa-plus"></i>
                             </a>
                             ';
-                        return $actionBtn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-            } else if ($type == "confirm") {
-                return DataTables::of(\Cart::session(auth()->user()->id)->getContent())
-                    ->addIndexColumn()
-                    ->rawColumns([])
-                    ->make(true);
-            }
+                    return $actionBtn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        } else if ($type == "confirm") {
+            return DataTables::of(Cart::session(auth()->user()->id)->getContent())
+                ->addIndexColumn()
+                ->rawColumns([])
+                ->make(true);
         }
+        // }
     }
 
     public function store(Request $request)
@@ -153,10 +172,10 @@ class AlatController extends Controller
 
     public function create()
     {
+        $peminjaman = session()->get('peminjaman_' . auth()->user()->id);
         $alat = Alat::where('status', 1)->get();
-        $peminjaman_ruangan = session()->get('peminjaman_ruangan');
-        $cart = \Cart::session(auth()->user()->id)->getContent();
-        return view('user.peminjaman.alat.create', compact('peminjaman_ruangan', 'alat', 'cart'));
+        $cart = Cart::session(auth()->user()->id)->getContent();
+        return view('user.peminjaman.alat.create', compact('peminjaman', 'alat', 'cart'));
     }
 
     public function updateCart(Request $request)
@@ -174,7 +193,7 @@ class AlatController extends Controller
             return redirect()->route('user.peminjaman.alat.create')->with('danger', 'Quantity melebihi stok!');
         }
 
-        \Cart::session(auth()->user()->id)->update($request->id, [
+        Cart::session(auth()->user()->id)->update($request->id, [
             'quantity' => [
                 'relative' => false,
                 'value' => $request->quantity
@@ -190,7 +209,7 @@ class AlatController extends Controller
             'id' => 'required|numeric',
         ]);
 
-        \Cart::session(auth()->user()->id)->remove($request->id);
+        Cart::session(auth()->user()->id)->remove($request->id);
 
         return redirect()->route('user.peminjaman.alat.create')->with('success', 'Berhasil menghapus item pada cart!');
     }
@@ -201,16 +220,30 @@ class AlatController extends Controller
         $request->validate([
             'qty' => 'required|numeric',
         ]);
-        $alat = Alat::with(['kategori'])->find($id);
-        if ($alat->stok < 1) {
+        $peminjaman = session()->get('peminjaman_' . auth()->user()->id);
+        $alat_original = Alat::find($id);
+        $alat = Alat::with(['borrow' => function ($query) use ($peminjaman) {
+            $query->whereDate('end_date', '>=', $peminjaman['begin_date'])->whereDate('begin_date', '<=', $peminjaman['end_date']);
+        }])->where('id', $id)->first();
+        if ($alat->borrow->count() == 0) {
+            $stok = $alat_original->stok;
+        } else {
+            $stok = $alat_original->stok;
+            foreach ($alat->borrow as $borrow) {
+                if ($borrow->pivot->borrowable_id == $alat->id) {
+                    $stok -= $borrow->pivot->qty;
+                }
+            }
+        }
+        if ($stok < 1) {
             return response()->json(['status' => FALSE, 'message' => 'Stok habis!']);
         }
-        if ($request->qty > $alat->stok) {
+        if ($request->qty > $stok) {
             return response()->json(['status' => FALSE, 'message' => 'Quantity melebihi stok!']);
         }
 
         $user_id = auth()->user()->id;
-        \Cart::session($user_id)->add([
+        Cart::session($user_id)->add([
             'id' => $id,
             'name' => $alat->nama,
             'quantity' => $request->qty,
@@ -219,22 +252,23 @@ class AlatController extends Controller
             'associatedModel' => $alat
         ]);
 
-        return response()->json(['status' => TRUE, 'message' => 'Berhasil Memasukkan Data Ke Keranjang', 'data' => \Cart::session($user_id)->getContent()->count()]);
+        return response()->json(['status' => TRUE, 'message' => 'Berhasil Memasukkan Data Ke Keranjang', 'data' => Cart::session($user_id)->getContent()->count()]);
     }
 
     public function confirm()
     {
-        $peminjaman_alat = \Cart::session(auth()->user()->id)->getContent();
-        session()->put('peminjaman_alat', $peminjaman_alat);
+        $peminjaman_alat = Cart::session(auth()->user()->id)->getContent();
+        session()->put('peminjaman_alat_' . auth()->user()->id, $peminjaman_alat);
+        $peminjaman = session()->get('peminjaman_' . auth()->user()->id);
         // dd($peminjaman_ruangan);
-        return view('user.peminjaman.alat.confirm', compact('peminjaman_alat'));
+        return view('user.peminjaman.alat.confirm', compact('peminjaman_alat', 'peminjaman'));
     }
 
     public function confirmStore(Request $request)
     {
-        if (session()->get('peminjaman_alat')) {
-            $peminjaman = session()->get('peminjaman');
-            $peminjaman_alat = session()->get('peminjaman_alat');
+        if (session()->get('peminjaman_alat_' . auth()->user()->id)) {
+            $peminjaman = session()->get('peminjaman_' . auth()->user()->id);
+            $peminjaman_alat = session()->get('peminjaman_alat_' . auth()->user()->id);
             $peminjaman_alat = $peminjaman_alat->toArray();
             $peminjaman = Borrow::create([
                 'begin_date' => $peminjaman['begin_date'] . " "  . $peminjaman['jam_awal'],
@@ -248,20 +282,21 @@ class AlatController extends Controller
                 'nomor_surat' =>  $this->generateNomorSurat($peminjaman)
             ]);
 
-            $peminjaman->ruangan()->attach([$peminjaman['id_ruangan'] => ['qty' => 1]]);
-
             foreach ($peminjaman_alat as $pa) {
                 $peminjaman->alat()->attach([$pa['id'] => ['qty' => $pa['quantity']]]);
-                $alat = Alat::find($pa['id']);
-                $alat->update([
-                    'stok' => $alat->stok - $pa['quantity']
-                ]);
             }
-            session()->forget(['peminjaman_alat']);
+            session()->forget(['peminjaman_alat_' . auth()->user()->id, 'peminjaman_' . auth()->user()->id]);
             return redirect()->route('user.peminjaman.alat.index')->with('success', 'Berhasil booking alat dan alat!');
         } else {
             return redirect()->route('user.peminjaman.alat.index')->with('danger', 'Mohon untuk pilih alat dan alat terlebih dahulu!');
         }
+    }
+
+    public function generateNomorSurat(Borrow $borrow)
+    {
+        $bulan = Carbon::now()->month;
+        $tahun = Carbon::now()->year;
+        return "$borrow->id/$bulan/STUDIO MODIS/$tahun";
     }
 
     public function show($id)

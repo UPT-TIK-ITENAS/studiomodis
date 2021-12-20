@@ -5,7 +5,7 @@ namespace App\Http\Controllers\User\Peminjaman;
 use App\Alat;
 use App\Borrow;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\RuanganCalendarResource;
+use Darryldecode\Cart\Facades\CartFacade as Cart;
 use App\Ruangan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -92,16 +92,16 @@ class RuanganController extends Controller
         $peminjaman_ruangan = Arr::except($peminjaman_ruangan, '_token');
         $peminjaman_ruangan = Arr::add($peminjaman_ruangan, 'nama_ruangan', $ruangan->nama);
         $peminjaman_ruangan = Arr::add($peminjaman_ruangan, 'nomor_ruangan', $ruangan->no_ruangan);
-        session()->put('peminjaman_ruangan', $peminjaman_ruangan);
+        session()->put('peminjaman_ruangan_' . auth()->user()->id, $peminjaman_ruangan);
         return redirect()->route('user.peminjaman.ruangan.alat')->with('success', 'Silakan pilih Alat yang akan dipinjam!');
     }
 
     public function alat()
     {
-        if (session()->get('peminjaman_ruangan')) {
+        if (session()->get('peminjaman_ruangan_' . auth()->user()->id)) {
             $alat = Alat::where('status', 1)->get();
-            $peminjaman_ruangan = session()->get('peminjaman_ruangan');
-            $cart = \Cart::session(auth()->user()->id)->getContent();
+            $peminjaman_ruangan = session()->get('peminjaman_ruangan_' . auth()->user()->id);
+            $cart = Cart::session(auth()->user()->id)->getContent();
             return view('user.peminjaman.ruangan.alat', compact('peminjaman_ruangan', 'alat', 'cart'));
         } else {
             return redirect()->route('user.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan terlebih dahulu!');
@@ -110,20 +110,34 @@ class RuanganController extends Controller
 
     public function alat_cart(Request $request, $id)
     {
-        if (session()->get('peminjaman_ruangan')) {
+        if (session()->get('peminjaman_ruangan_' . auth()->user()->id)) {
             $request->validate([
                 'qty' => 'required|numeric',
             ]);
-            $alat = Alat::with(['kategori'])->find($id);
-            if ($alat->stok < 1) {
+            $peminjaman_ruangan = session()->get('peminjaman_ruangan_' . auth()->user()->id);
+            $alat_original = Alat::find($id);
+            $alat = Alat::with(['borrow' => function ($query) use ($peminjaman_ruangan) {
+                $query->whereDate('end_date', '>=', $peminjaman_ruangan['begin_date'])->whereDate('begin_date', '<=', $peminjaman_ruangan['end_date']);
+            }])->where('id', $id)->first();
+            if ($alat->borrow->count() == 0) {
+                $stok = $alat_original->stok;
+            } else {
+                $stok = $alat_original->stok;
+                foreach ($alat->borrow as $borrow) {
+                    if ($borrow->pivot->alat_id == $alat->id) {
+                        $stok -= $borrow->pivot->qty;
+                    }
+                }
+            }
+            if ($stok < 1) {
                 return response()->json(['status' => FALSE, 'message' => 'Stok habis!']);
             }
-            if ($request->qty > $alat->stok) {
+            if ($request->qty > $stok) {
                 return response()->json(['status' => FALSE, 'message' => 'Quantity melebihi stok!']);
             }
 
             $user_id = auth()->user()->id;
-            \Cart::session($user_id)->add([
+            Cart::session($user_id)->add([
                 'id' => $id,
                 'name' => $alat->nama,
                 'quantity' => $request->qty,
@@ -132,7 +146,7 @@ class RuanganController extends Controller
                 'associatedModel' => $alat
             ]);
 
-            return response()->json(['status' => TRUE, 'message' => 'Berhasil Memasukkan Data Ke Keranjang', 'data' => \Cart::session($user_id)->getContent()->count()]);
+            return response()->json(['status' => TRUE, 'message' => 'Berhasil Memasukkan Data Ke Keranjang', 'data' => Cart::session($user_id)->getContent()->count()]);
         } else {
             return redirect()->route('user.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan terlebih dahulu!');
         }
@@ -140,12 +154,13 @@ class RuanganController extends Controller
 
     public function alat_list(Request $request, $type)
     {
+        $peminjaman_ruangan = session()->get('peminjaman_ruangan_' . auth()->user()->id);
         if ($request->ajax()) {
             if ($type == "cart") {
                 $csrf_field = csrf_field();
                 $url_update = route('user.peminjaman.ruangan.updateCart');
                 $url_delete = route('user.peminjaman.ruangan.deleteCart');
-                return DataTables::of(\Cart::session(auth()->user()->id)->getContent())
+                return DataTables::of(Cart::session(auth()->user()->id)->getContent())
                     ->addIndexColumn()
                     ->editColumn('quantity', function ($row) use ($csrf_field, $url_update) {
                         $actionBtn = "
@@ -180,6 +195,22 @@ class RuanganController extends Controller
                 $data = Alat::with(['kategori'])->latest()->get();
                 return DataTables::of($data)
                     ->addIndexColumn()
+                    ->editColumn('stok', function ($row) use ($peminjaman_ruangan) {
+                        $alat = Alat::with(['borrow' => function ($query) use ($peminjaman_ruangan) {
+                            $query->whereDate('end_date', '>=', $peminjaman_ruangan['begin_date'])->whereDate('begin_date', '<=', $peminjaman_ruangan['end_date']);
+                        }])->where('id', $row->id)->first();
+                        if ($alat->borrow->count() == 0) {
+                            return $row->stok;
+                        } else {
+                            $stok = $row->stok;
+                            foreach ($alat->borrow as $borrow) {
+                                if ($borrow->pivot->borrowable_id == $alat->id) {
+                                    $stok -= $borrow->pivot->qty;
+                                }
+                            }
+                            return $stok;
+                        }
+                    })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->diffForHumans();
                     })
@@ -200,7 +231,7 @@ class RuanganController extends Controller
                     ->rawColumns(['action'])
                     ->make(true);
             } else if ($type == "confirm") {
-                return DataTables::of(\Cart::session(auth()->user()->id)->getContent())
+                return DataTables::of(Cart::session(auth()->user()->id)->getContent())
                     ->addIndexColumn()
                     ->rawColumns([])
                     ->make(true);
@@ -230,7 +261,7 @@ class RuanganController extends Controller
             return redirect()->route('user.peminjaman.ruangan.alat')->with('danger', 'Quantity melebihi stok!');
         }
 
-        \Cart::session(auth()->user()->id)->update($request->id, [
+        Cart::session(auth()->user()->id)->update($request->id, [
             'quantity' => [
                 'relative' => false,
                 'value' => $request->quantity
@@ -246,18 +277,17 @@ class RuanganController extends Controller
             'id' => 'required|numeric',
         ]);
 
-        \Cart::session(auth()->user()->id)->remove($request->id);
+        Cart::session(auth()->user()->id)->remove($request->id);
 
         return redirect()->route('user.peminjaman.ruangan.alat')->with('success', 'Berhasil menghapus item pada cart!');
     }
 
     public function confirm()
     {
-        if (session()->get('peminjaman_ruangan')) {
-            $peminjaman_alat = \Cart::session(auth()->user()->id)->getContent();
-            session()->put('peminjaman_alat', $peminjaman_alat);
-            $peminjaman_ruangan = session()->get('peminjaman_ruangan');
-            // dd($peminjaman_ruangan);
+        if (session()->get('peminjaman_ruangan_' . auth()->user()->id)) {
+            $peminjaman_alat = Cart::session(auth()->user()->id)->getContent();
+            session()->put('peminjaman_alat_' . auth()->user()->id, $peminjaman_alat);
+            $peminjaman_ruangan = session()->get('peminjaman_ruangan_' . auth()->user()->id);
             return view('user.peminjaman.ruangan.confirm', compact('peminjaman_alat', 'peminjaman_ruangan'));
         } else {
             return redirect()->route('user.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan dan alat terlebih dahulu!');
@@ -266,10 +296,9 @@ class RuanganController extends Controller
 
     public function confirmStore(Request $request)
     {
-        if (session()->get('peminjaman_ruangan') || session()->get('peminjaman_alat')) {
-            $peminjaman_ruangan = session()->get('peminjaman_ruangan');
-            $peminjaman_alat = session()->get('peminjaman_alat');
-            $peminjaman_alat = $peminjaman_alat->toArray();
+        if (session()->get('peminjaman_ruangan_' . auth()->user()->id) || session()->get('peminjaman_alat_' . auth()->user()->id)) {
+            $peminjaman_ruangan = session()->get('peminjaman_ruangan_' . auth()->user()->id);
+            $peminjaman_alat = session()->get('peminjaman_alat_' . auth()->user()->id);
             $peminjaman = Borrow::create([
                 'begin_date' => $peminjaman_ruangan['begin_date'] . " "  . $peminjaman_ruangan['jam_awal'],
                 'end_date' => $peminjaman_ruangan['end_date'] . " " . $peminjaman_ruangan['jam_akhir'],
@@ -286,12 +315,8 @@ class RuanganController extends Controller
 
             foreach ($peminjaman_alat as $pa) {
                 $peminjaman->alat()->attach([$pa['id'] => ['qty' => $pa['quantity']]]);
-                $alat = Alat::find($pa['id']);
-                $alat->update([
-                    'stok' => $alat->stok - $pa['quantity']
-                ]);
             }
-            session()->forget(['peminjaman_ruangan', 'peminjaman_alat']);
+            session()->forget(['peminjaman_ruangan_' . auth()->user()->id, 'peminjaman_alat_' . auth()->user()->id]);
             return redirect()->route('user.peminjaman.ruangan.index')->with('success', 'Berhasil booking ruangan dan alat!');
         } else {
             return redirect()->route('user.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan dan alat terlebih dahulu!');

@@ -40,21 +40,21 @@
                         <div class="mb-3 row align-items-center">
                             <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Deskripsi</label>
                             <div class="col-md-9 col-12 col-form-label form-label">
-                                <p class="mb-0">{{ $peminjaman_alat['description'] }}</p>
+                                <p class="mb-0">{{ $peminjaman['description'] }}</p>
                             </div>
                         </div>
                         <div class="mb-3 row align-items-center">
                             <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Tanggal Awal</label>
                             <div class="col-md-9 col-12 col-form-label form-label">
                                 <p class="mb-0">
-                                    {{ $peminjaman_alat['begin_date'] . ' ' . $peminjaman_alat['jam_awal'] }}</p>
+                                    {{ $peminjaman['begin_date'] . ' ' . $peminjaman['jam_awal'] }}</p>
                             </div>
                         </div>
                         <div class="mb-3 row align-items-center">
                             <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Tanggal Akhir</label>
                             <div class="col-md-9 col-12 col-form-label form-label">
                                 <p class="mb-0">
-                                    {{ $peminjaman_alat['end_date'] . ' ' . $peminjaman_alat['jam_akhir'] }}</p>
+                                    {{ $peminjaman['end_date'] . ' ' . $peminjaman['jam_akhir'] }}</p>
                             </div>
                         </div>
                     </div>

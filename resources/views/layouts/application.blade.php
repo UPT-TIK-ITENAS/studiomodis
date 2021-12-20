@@ -112,7 +112,7 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('admin.alat.index') }}">
+                                        <a class="nav-link " href="{{ route('admin.peminjaman.alat.index') }}">
                                             Alat
                                         </a>
                                     </li>

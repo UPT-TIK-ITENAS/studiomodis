@@ -18,7 +18,7 @@
                         <h3 class="mb-0 fw-bold text-white">Peminjaman Alat</h3>
                     </div>
                     <div>
-                        <a href="{{ route('admin.peminjaman.alat.create') }}" class="btn btn-white">Buat Peminjaman
+                        <a href="{{ route('admin.peminjaman.alat.peminjaman') }}" class="btn btn-white">Buat Peminjaman
                             Alat</a>
                     </div>
                 </div>

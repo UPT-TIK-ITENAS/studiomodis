@@ -16,16 +16,27 @@
             <div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="mb-2 mb-lg-0">
-                        <h3 class="mb-0 fw-bold text-white">Peminjaman</h3>
+                        <h3 class="mb-0 fw-bold text-white">Peminjaman Alat</h3>
                     </div>
-                    @if ($borrow->status == 1)
-                        <div>
-                            <form action="" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-success text-white">
-                                    Kembalikan Alat
-                                </button>
-                            </form>
+                    @if ($borrow->status == 0)
+                        <div class="row">
+                            <div class="col">
+                                <form action="{{ route('admin.peminjaman.alat.status', $borrow->id) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="status" value="1">
+                                    <button type="submit" class="btn btn-success text-white">
+                                        Approve
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col">
+                                <form action="" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-danger text-white">
+                                        Tolak
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     @endif
                 </div>
@@ -35,7 +46,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="mt-4">
-                        <h4 class="mb-1">Detail Peminjaman</h4>
+                        <h4 class="mb-1">Detail Peminjaman Alat</h4>
                     </div>
 
                     <div>
@@ -113,6 +124,26 @@
 
 @push('scripts')
     <script>
+        $(document).ready(function() {
+            let flashdatasukses = $('.success-session').data('flashdata');
+            if (flashdatasukses) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: flashdatasukses,
+                    type: 'success'
+                })
+            }
+            let flashdatadanger = $('.danger-session').data('flashdata');
+            if (flashdatadanger) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: flashdatadanger,
+                    type: 'error'
+                })
+            }
+        })
         let alatTable = $('#alat-table').DataTable({
             fixedHeader: true,
             pageLength: 25,
