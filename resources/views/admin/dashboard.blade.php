@@ -33,7 +33,7 @@
                     <div class="d-flex justify-content-between align-items-center
     mb-3">
                         <div>
-                            <h4 class="mb-0">Projects</h4>
+                            <h4 class="mb-0">Alat</h4>
                         </div>
                         <div class="icon-shape icon-md bg-light-primary text-primary
       rounded-1">
@@ -42,8 +42,9 @@
                     </div>
                     <!-- project number -->
                     <div>
-                        <h1 class="fw-bold">18</h1>
-                        <p class="mb-0"><span class="text-dark me-2">2</span>Completed</p>
+                        <h1 class="fw-bold">{{ $alat }}</h1>
+                        <p class="mb-0"><span class="text-dark me-2">{{ $alat_dipinjam }}</span>Alat yang
+                            dipinjam hari ini</p>
                     </div>
                 </div>
             </div>
@@ -57,7 +58,7 @@
                     <div class="d-flex justify-content-between align-items-center
     mb-3">
                         <div>
-                            <h4 class="mb-0">Active Task</h4>
+                            <h4 class="mb-0">Ruangan</h4>
                         </div>
                         <div class="icon-shape icon-md bg-light-primary text-primary
       rounded-1">
@@ -66,8 +67,9 @@
                     </div>
                     <!-- project number -->
                     <div>
-                        <h1 class="fw-bold">132</h1>
-                        <p class="mb-0"><span class="text-dark me-2">28</span>Completed</p>
+                        <h1 class="fw-bold">{{ $ruangan }}</h1>
+                        <p class="mb-0"><span class="text-dark me-2">{{ $ruangan_dipinjam }}</span>Ruangan yang
+                            dipinjam hari ini</p>
                     </div>
                 </div>
             </div>
@@ -81,7 +83,7 @@
                     <div class="d-flex justify-content-between align-items-center
     mb-3">
                         <div>
-                            <h4 class="mb-0">Teams</h4>
+                            <h4 class="mb-0">Peminjaman</h4>
                         </div>
                         <div class="icon-shape icon-md bg-light-primary text-primary
       rounded-1">
@@ -90,8 +92,10 @@
                     </div>
                     <!-- project number -->
                     <div>
-                        <h1 class="fw-bold">12</h1>
-                        <p class="mb-0"><span class="text-dark me-2">1</span>Completed</p>
+                        <h1 class="fw-bold">{{ $peminjaman }}</h1>
+                        <p class="mb-0"><span class="text-dark me-2">{{ $peminjaman_diterima }}</span>Peminjaman
+                            yang telah diterima
+                        </p>
                     </div>
                 </div>
             </div>
@@ -106,7 +110,7 @@
                     <div class="d-flex justify-content-between align-items-center
     mb-3">
                         <div>
-                            <h4 class="mb-0">Productivity</h4>
+                            <h4 class="mb-0">Pengguna</h4>
                         </div>
                         <div class="icon-shape icon-md bg-light-primary text-primary
       rounded-1">
@@ -115,8 +119,8 @@
                     </div>
                     <!-- project number -->
                     <div>
-                        <h1 class="fw-bold">76%</h1>
-                        <p class="mb-0"><span class="text-success me-2">5%</span>Completed</p>
+                        <h1 class="fw-bold">{{ $pengguna }}</h1>
+                        <p class="mb-0">Pengguna yang terdaftar</p>
                     </div>
                 </div>
             </div>
