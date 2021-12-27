@@ -27,6 +27,9 @@ Route::get('/check-ruangan', 'RuanganCheck')->name('check.ruangan');
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/home', 'Admin\HomeController@index')->name('home');
+    Route::prefix('api')->name('api.')->group(function () {
+        Route::get('/peminjaman-ruangan/{year}', 'Admin\HomeController@getPeminjamanRuanganPerMonth')->name('peminjaman');
+    });
 
     Route::get('/ruangan/list', 'Admin\RuanganController@list')->name('ruangan.list');
     Route::resource('ruangan', 'Admin\RuanganController');
