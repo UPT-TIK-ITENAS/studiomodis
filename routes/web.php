@@ -40,7 +40,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/alat/list', 'Admin\AlatController@list')->name('alat.list');
     Route::resource('alat', 'Admin\AlatController');
 
+    Route::get('/user/atasan', 'Admin\UserController@atasan')->name('user.atasan');
+    Route::get('/user/list', 'Admin\UserController@list')->name('user.list');
+    Route::resource('user', 'Admin\UserController');
+
     Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
+        Route::post('/alat/{id}/tolak', 'Admin\Peminjaman\AlatController@tolak')->name('alat.tolak');
         Route::get('/alat/peminjaman', 'Admin\Peminjaman\AlatController@peminjaman')->name('alat.peminjaman');
         Route::post('/alat/peminjaman', 'Admin\Peminjaman\AlatController@storePeminjaman')->name('alat.storePeminjaman');
         Route::get('/alat/listPeminjaman', 'Admin\Peminjaman\AlatController@listPeminjaman')->name('alat.listPeminjaman');
@@ -55,6 +60,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
         Route::resource('alat', 'Admin\Peminjaman\AlatController');
 
+        Route::post('/ruangan/{id}/tolak', 'Admin\Peminjaman\RuanganController@tolak')->name('ruangan.tolak');
         Route::get('/ruangan/confirm', 'Admin\Peminjaman\RuanganController@confirm')->name('ruangan.confirm');
         Route::post('/ruangan/confirm', 'Admin\Peminjaman\RuanganController@confirmStore')->name('ruangan.confirmStore');
         Route::get('/ruangan/alat_list/{type}', 'Admin\Peminjaman\RuanganController@alat_list')->name('ruangan.alat_list');

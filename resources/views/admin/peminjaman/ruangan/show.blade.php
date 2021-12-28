@@ -35,12 +35,9 @@
                                 </form>
                             </div>
                             <div class="col">
-                                <form action="" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger text-white">
-                                        Tolak
-                                    </button>
-                                </form>
+                                <button id="tolak" class="btn btn-danger text-white" data-id="{{ $borrow->id }}">
+                                    Tolak
+                                </button>
                             </div>
                         </div>
                     @endif
@@ -81,6 +78,16 @@
                                 @endif
                             </div>
                         </div>
+                        @if ($borrow->status == 2)
+                            <div class="mb-3 row align-items-center">
+                                <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Pesan Tolak</label>
+                                <div class="col-md-9 col-12 col-form-label form-label">
+                                    <p class="mb-0 text-danger fw-bold">
+                                        {{ $borrow->pesan_tolak }}
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
                         <div class="mb-3 row align-items-center">
                             <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Deskripsi</label>
                             <div class="col-md-9 col-12 col-form-label form-label">
@@ -202,5 +209,67 @@
                 },
             ]
         });
+        let CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        $("#tolak").click(function(e) {
+            let id = $(this).data('id');
+            (async () => {
+                const {
+                    value: text
+                } = await Swal.fire({
+                    title: name,
+                    text: 'Masukkan Pesan Penolakan',
+                    input: 'text',
+                    inputAttributes: {
+                        autocapitalize: 'off'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Look up',
+                    showLoaderOnConfirm: true,
+                    allowOutsideClick: () => !Swal.isLoading()
+                })
+
+                if (text) {
+                    $.ajax({
+                        url: "{{ url('admin/peminjaman/ruangan') }}/" + id + "/tolak",
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            pesan_tolak: text
+                        },
+                        dataType: 'JSON',
+                        success: function(response) {
+                            if (response.status) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    type: 'success',
+                                    title: "Peminjaman telah ditolak!",
+                                    showConfirmButton: true
+                                }).then((result) => {
+                                    location.reload();
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    type: 'error',
+                                    title: response.message,
+                                    showConfirmButton: true
+                                })
+                            }
+                            console.log(response)
+                            reload_table(null, true)
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            Swal.fire({
+                                icon: 'error',
+                                type: 'error',
+                                title: 'Error saat memasukkan data',
+                                showConfirmButton: true
+                            })
+                        }
+                    })
+                }
+
+            })()
+        })
     </script>
 @endpush

@@ -332,5 +332,8 @@ class AlatController extends Controller
 
     public function destroy($id)
     {
+        $borrow = Borrow::with(['ruangan', 'alat'])->findOrFail($id);
+        $borrow->delete();
+        return response()->json(['status' => TRUE]);
     }
 }

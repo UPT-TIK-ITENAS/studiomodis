@@ -48,14 +48,14 @@
         <nav class="navbar-vertical navbar">
             <div class="nav-scroller">
                 <!-- Brand logo -->
-                <a class="navbar-brand" href="./index.html">
+                <a class="navbar-brand" href="{{ route('admin.home') }}">
                     <p>STUDIO MODIS</p>
                 </a>
                 <!-- Navbar nav -->
                 <ul class="navbar-nav flex-column" id="sideNavbar">
                     @if (auth()->user()->role === 'admin')
                         <li class="nav-item">
-                            <a class="nav-link has-arrow  active " href="./index.html">
+                            <a class="nav-link has-arrow  active " href="{{ route('admin.home') }}">
                                 <i data-feather="home" class="nav-icon icon-xs me-2"></i> Dashboard
                             </a>
 
@@ -167,7 +167,7 @@
                             <a class="rounded-circle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                                 <div class="avatar avatar-md avatar-indicators avatar-online">
-                                    <img alt="avatar" src=" {{ asset('assets/images/avatar/avatar-1.jpg') }}"
+                                    <img alt="avatar" src=" {{ asset('assets/images/avatar/avatar-user.png') }}"
                                         class="rounded-circle" />
                                 </div>
                             </a>

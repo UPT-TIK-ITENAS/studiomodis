@@ -357,12 +357,6 @@ class RuanganController extends Controller
     public function destroy($id)
     {
         $borrow = Borrow::with(['ruangan', 'alat'])->findOrFail($id);
-        foreach ($borrow->alat as $alat) {
-            $alat_f = Alat::find($alat->id);
-            $alat_f->update([
-                'stok' => $alat_f->stok + $alat->pivot->qty
-            ]);
-        }
         $borrow->delete();
         return response()->json(['status' => TRUE]);
     }
