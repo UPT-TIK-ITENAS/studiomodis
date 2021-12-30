@@ -188,7 +188,7 @@
                 },
             },
             noData: {
-                text: "Loading ... ",
+                text: "Tidak Ada ... ",
                 align: 'center',
                 verticalAlign: 'middle',
                 offsetX: 0,

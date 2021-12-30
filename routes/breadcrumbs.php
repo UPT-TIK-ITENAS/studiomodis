@@ -13,6 +13,24 @@ Breadcrumbs::for('admin.home', function (BreadcrumbTrail $trail) {
     $trail->push('Home', route('admin.home'));
 });
 
+// Home > User
+Breadcrumbs::for('admin.user', function (BreadcrumbTrail $trail) {
+    $trail->parent('admin.home');
+    $trail->push('User', route('admin.user.index'));
+});
+
+// Home > User > Buat User
+Breadcrumbs::for('admin.user.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('admin.user');
+    $trail->push('Buat User', route('admin.user.create'));
+});
+
+// Home > User > [User]
+Breadcrumbs::for('admin.user.edit', function (BreadcrumbTrail $trail, $user) {
+    $trail->parent('admin.user');
+    $trail->push($user->nama, route('admin.user.edit', $user));
+});
+
 // Home > Ruangan
 Breadcrumbs::for('admin.ruangan', function (BreadcrumbTrail $trail) {
     $trail->parent('admin.home');

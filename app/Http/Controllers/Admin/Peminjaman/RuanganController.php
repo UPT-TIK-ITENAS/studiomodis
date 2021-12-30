@@ -22,7 +22,7 @@ class RuanganController extends Controller
     public function list(Request $request)
     {
         if ($request->ajax()) {
-            $data = Borrow::with(['ruangan'])->whereHas('ruangan')->latest()->where('user_id', auth()->user()->id)->get();
+            $data = Borrow::with(['ruangan'])->whereHas('ruangan')->latest()->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('created_at', function ($row) {

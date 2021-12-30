@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Borrow;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class UserController extends Controller
 
     public function list(Request $request)
     {
-        $data = DB::table('pegawai')->select('users.username, pegawai.*', 'jabatan.*', 'unit.*')->join('users', 'users.username', '=', 'pegawai.nik')->join('unitjabatan', 'unitjabatan.idpegawai', '=', 'pegawai.idpegawai')->join('unit', 'unitjabatan.idunit', '=', 'unit.idunit')->join('jabatan', 'unitjabatan.idjabatan', '=', 'jabatan.idjabatan')->latest()->get();
+        $data = DB::table('pegawai')->select('users.username', 'pegawai.*', 'jabatan.*', 'unit.*')->join('users', 'users.username', '=', 'pegawai.nik')->join('unitjabatan', 'unitjabatan.idpegawai', '=', 'pegawai.idpegawai')->join('unit', 'unitjabatan.idunit', '=', 'unit.idunit')->join('jabatan', 'unitjabatan.idjabatan', '=', 'jabatan.idjabatan')->latest()->get();
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
@@ -134,7 +135,13 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $jabatan = DB::table('jabatan')->get();
+        $unit = DB::table('unit')->get();
+        $pegawai = DB::table('pegawai')->get();
+        $user =  DB::table('pegawai')->select('users.username', 'users.password', 'pegawai.*', 'jabatan.*', 'unit.*')->join('users', 'users.username', '=', 'pegawai.nik')->join('unitjabatan', 'unitjabatan.idpegawai', '=', 'pegawai.idpegawai')->join('unit', 'unitjabatan.idunit', '=', 'unit.idunit')->join('jabatan', 'unitjabatan.idjabatan', '=', 'jabatan.idjabatan')->where('pegawai.idpegawai', '=', $id)->first();
+        $atasan1 = DB::table('pegawai')->where('nik', $user->nikatasan)->first();
+        $atasan2 = DB::table('pegawai')->where('nik', $user->nikatasan2)->first();
+        return view('admin.user.edit', compact('jabatan', 'unit', 'pegawai', 'user', 'atasan1', 'atasan2'));
     }
 
     /**
@@ -146,7 +153,34 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'namapegawai' => 'required',
+            'email' => 'required',
+            'nohp' => 'required',
+            'atasan_1' => 'required',
+            'unit' => 'required',
+            'jabatan' => 'required'
+        ]);
+        $user =  DB::table('pegawai')->select('users.username', 'users.password', 'pegawai.*', 'jabatan.*', 'unit.*')->join('users', 'users.username', '=', 'pegawai.nik')->join('unitjabatan', 'unitjabatan.idpegawai', '=', 'pegawai.idpegawai')->join('unit', 'unitjabatan.idunit', '=', 'unit.idunit')->join('jabatan', 'unitjabatan.idjabatan', '=', 'jabatan.idjabatan')->where('pegawai.idpegawai', '=', $id)->first();
+
+        DB::transaction(function () use ($request, $id, $user) {
+            DB::table('pegawai')->where('idpegawai', '=', $id)->update([
+                'namapegawai' => $request->namapegawai,
+                'email' => $request->email,
+                'nohp' => $request->nohp,
+                'idtelegram' => $request->idtelegram,
+                'nikatasan' => $request->atasan_1,
+                'nikatasan2' => $request->atasan_2,
+            ]);
+            DB::table('users')->where('username', '=', $user->username)->update([
+                'password' => $request->password,
+            ]);
+            DB::table('unitjabatan')->where('idpegawai', '=', $id)->update([
+                'idunit' => $request->unit,
+                'idjabatan' => $request->jabatan
+            ]);
+        });
+        return redirect()->route('admin.user.index')->with('success', 'User berhasil diubah!');
     }
 
     /**
@@ -158,6 +192,9 @@ class UserController extends Controller
     public function destroy(Request $request, $id)
     {
         $username = $request->username;
+        Borrow::with(['user' => function ($query) {
+            return $query->where('id', auth()->user()->id);
+        }])->delete();
         $pegawai = DB::table('pegawai')->where('idpegawai', $id)->delete();
         $user = DB::table('users')->where('username', $username)->delete();
         DB::table('unitjabatan')->where('idpegawai', $id)->delete();

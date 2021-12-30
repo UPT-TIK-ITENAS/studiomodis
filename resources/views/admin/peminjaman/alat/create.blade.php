@@ -190,6 +190,8 @@
                                     type: 'success',
                                     title: "Berhasil Memasukkan Data Ke Keranjang",
                                     showConfirmButton: true
+                                }).then((result) => {
+                                    location.reload()
                                 })
                                 $("#cart-count").html(`(${response.data})`)
                             } else {

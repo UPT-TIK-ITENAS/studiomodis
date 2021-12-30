@@ -9,7 +9,7 @@
         <div class="col-lg-12 col-md-12 col-12">
             <div class="card mb-3">
                 <div class="card-title py-3">
-
+                    {{ Breadcrumbs::render('admin.user') }}
                 </div>
             </div>
             @if (session('success'))

@@ -32,6 +32,6 @@ class HomeController extends Controller
 
     public function getPeminjamanRuanganPerMonth(Request $request, $year)
     {
-        return  Borrow::with(['ruangan'])->selectRaw('MONTHNAME(created_at) as month, (SUM(IF(`status` = 1, 1, 0))) AS total')->whereHas('ruangan')->where('status', 1)->whereYear('created_at', $year)->groupByRaw('MONTHNAME(created_at)')->orderByRaw("STR_TO_DATE(CONCAT('0001 ', month, ' 01'), '%Y %M %d')")->get();
+        return Borrow::with(['ruangan'])->selectRaw('MONTHNAME(created_at) as month, (SUM(IF(`status` = 1, 1, 0))) AS total')->whereHas('ruangan')->where('status', 1)->whereYear('created_at', $year)->groupByRaw('MONTHNAME(created_at)')->orderByRaw("STR_TO_DATE(CONCAT('0001 ', month, ' 01'), '%Y %M %d')")->get();
     }
 }

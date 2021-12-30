@@ -66,6 +66,13 @@
                             <div class="navbar-heading">Admin</div>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link " href="{{ route('admin.user.index') }}">
+                                <i data-feather="users" class="nav-icon icon-xs me-2">
+                                </i>
+                                Pegawai
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link " href="{{ route('admin.ruangan.index') }}">
                                 <i data-feather="sidebar" class="nav-icon icon-xs me-2">
                                 </i>

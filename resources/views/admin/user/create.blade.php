@@ -10,6 +10,7 @@
             <!-- Page header -->
             <div class="card mb-3">
                 <div class="card-title py-3">
+                    {{ Breadcrumbs::render('admin.user.create') }}
                 </div>
             </div>
             <div>
