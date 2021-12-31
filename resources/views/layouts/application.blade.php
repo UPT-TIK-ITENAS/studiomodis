@@ -192,7 +192,7 @@
                                 <ul class="list-unstyled">
 
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="{{ route('profile.edit') }}">
                                             <i class="me-2 icon-xxs dropdown-item-icon" data-feather="user"></i>Edit
                                             Profile
                                         </a>

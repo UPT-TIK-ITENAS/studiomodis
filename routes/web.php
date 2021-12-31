@@ -24,6 +24,8 @@ Route::get('/', function () {
 
 Auth::routes();
 Route::get('/check-ruangan', 'RuanganCheck')->name('check.ruangan');
+Route::get('/edit-profile', 'ProfileController@edit')->name('profile.edit');
+Route::put('/edit-profile', 'ProfileController@update')->name('profile.update');
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/home', 'Admin\HomeController@index')->name('home');
