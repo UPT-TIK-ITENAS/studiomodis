@@ -317,6 +317,7 @@ class RuanganController extends Controller
                 $peminjaman->alat()->attach([$pa['id'] => ['qty' => $pa['quantity']]]);
             }
             session()->forget(['peminjaman_ruangan_' . auth()->user()->id, 'peminjaman_alat_' . auth()->user()->id]);
+            Cart::session(auth()->user()->id)->clear();
             return redirect()->route('admin.peminjaman.ruangan.index')->with('success', 'Berhasil booking ruangan dan alat!');
         } else {
             return redirect()->route('admin.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan dan alat terlebih dahulu!');

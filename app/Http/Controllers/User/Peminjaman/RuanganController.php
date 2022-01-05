@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
 use App\Ruangan;
 use Carbon\Carbon;
+use Darryldecode\Cart\Cart as CartCart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Yajra\DataTables\Facades\DataTables;
@@ -317,6 +318,7 @@ class RuanganController extends Controller
                 $peminjaman->alat()->attach([$pa['id'] => ['qty' => $pa['quantity']]]);
             }
             session()->forget(['peminjaman_ruangan_' . auth()->user()->id, 'peminjaman_alat_' . auth()->user()->id]);
+            Cart::session(auth()->user()->id)->clear();
             return redirect()->route('user.peminjaman.ruangan.index')->with('success', 'Berhasil booking ruangan dan alat!');
         } else {
             return redirect()->route('user.peminjaman.ruangan.index')->with('danger', 'Mohon untuk pilih ruangan dan alat terlebih dahulu!');
@@ -359,5 +361,15 @@ class RuanganController extends Controller
         $borrow = Borrow::with(['ruangan', 'alat'])->findOrFail($id);
         $borrow->delete();
         return response()->json(['status' => TRUE]);
+    }
+
+    public function selesai(Request $request, $id)
+    {
+        $borrow = Borrow::findOrFail($id);
+        $borrow->update([
+            'status' => 3,
+        ]);
+
+        return response()->json(['status' => TRUE, 'message' => 'Peminjaman telah selesai!']);
     }
 }

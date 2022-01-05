@@ -18,16 +18,6 @@
                     <div class="mb-2 mb-lg-0">
                         <h3 class="mb-0 fw-bold text-white">Peminjaman</h3>
                     </div>
-                    @if($borrow->status == 1)
-                    <div>
-                        <form action="" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-success text-white">
-                                Kembalikan Alat
-                            </button>
-                        </form>
-                    </div>
-                    @endif
                 </div>
             </div>
         </div>
@@ -65,6 +55,16 @@
                                 @endif
                             </div>
                         </div>
+                        @if ($borrow->status == 2)
+                            <div class="mb-3 row align-items-center">
+                                <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Pesan Tolak</label>
+                                <div class="col-md-9 col-12 col-form-label form-label">
+                                    <p class="mb-0 text-danger fw-bold">
+                                        {{ $borrow->pesan_tolak }}
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
                         <div class="mb-3 row align-items-center">
                             <label for="id_ruangan" class="col-sm-3 col-form-label form-label">Deskripsi</label>
                             <div class="col-md-9 col-12 col-form-label form-label">

@@ -17,10 +17,10 @@ class RuanganCheck extends Controller
     public function __invoke(Request $request)
     {
         if ($request->ruangan != null) {
-            $data = Borrow::with(['ruangan', 'user'])->whereDate('begin_date', '>=', $request->start)->whereDate('end_date', '<=', $request->end)->get();
+            $data = Borrow::with(['ruangan', 'user'])->whereDate('begin_date', '>=', $request->start)->whereHas('ruangan')->whereDate('end_date', '<=', $request->end)->get();
             return RuanganCalendarResource::collection($data);
         } else {
-            $data = Borrow::with(['ruangan', 'user'])->whereDate('begin_date', '>=', $request->start)->whereDate('end_date', '<=', $request->end)->whereHas(
+            $data = Borrow::with(['ruangan', 'user'])->whereDate('begin_date', '>=', $request->start)->whereHas('ruangan')->whereDate('end_date', '<=', $request->end)->whereHas(
                 'ruangan',
                 function ($query) use ($request) {
                     $query->where('id', $request->ruangan);

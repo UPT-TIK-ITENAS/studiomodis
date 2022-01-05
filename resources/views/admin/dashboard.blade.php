@@ -13,16 +13,6 @@
                     {{ Breadcrumbs::render('admin.home') }}
                 </div>
             </div>
-            <div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="mb-2 mb-lg-0">
-                        <h3 class="mb-0 fw-bold text-white">Projects</h3>
-                    </div>
-                    <div>
-                        <a href="#" class="btn btn-white">Create New Project</a>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
             <!-- card -->
@@ -133,9 +123,9 @@
                         <h4>Grafik Peminjaman Ruangan</h4>
                     </div>
                     <div class="col-sm-6 pe-5">
-                        <select name="select_grafik" id="select_grafik" class="form-control">
+                        <select name="select_grafik_ruangan" id="select_grafik_ruangan" class="form-control">
                             @foreach ($year as $y)
-                                <option value="{{ $y->tahun }}">{{ 'Tahun ' . $y->tahun }}
+                                <option value="{{ $y->tahun }}" @if ($y->tahun == Carbon\Carbon::now()->year) selected @endif>{{ 'Tahun ' . $y->tahun }}
                                 </option>
                             @endforeach
                         </select>
@@ -143,6 +133,24 @@
                 </div>
                 <div class="card-body">
                     <div id="chart"></div>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-title row ps-5 py-3">
+                    <div class="col-sm-6">
+                        <h4>Grafik Peminjaman Alat</h4>
+                    </div>
+                    <div class="col-sm-6 pe-5">
+                        <select name="select_grafik_alat" id="select_grafik_alat" class="form-control">
+                            @foreach ($year as $y)
+                                <option value="{{ $y->tahun }}" @if ($y->tahun == Carbon\Carbon::now()->year) selected @endif>{{ 'Tahun ' . $y->tahun }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="chart-alat"></div>
                 </div>
             </div>
         </div>
@@ -173,6 +181,74 @@
             }],
             title: {
                 text: 'Grafik Peminjaman Ruangan Per Bulan',
+                offsetX: 15,
+                style: {
+                    fontSize: '20px',
+                    fontWeight: 'bold',
+                },
+            },
+            subtitle: {
+                text: 'Tahun 2021',
+                offsetX: 15,
+                style: {
+                    fontSize: '14px',
+                    fontWeight: 'normal',
+                },
+            },
+            noData: {
+                text: "Tidak Ada ... ",
+                align: 'center',
+                verticalAlign: 'middle',
+                offsetX: 0,
+                offsetY: 0,
+                style: {
+                    fontSize: '20px',
+                    fontFamily: 'Nunito'
+                }
+            },
+            colors: ['#435ebe', '#ff7976'],
+            xaxis: {
+                categories: [],
+                tickPlacement: 'on'
+            },
+            toolbar: {
+                show: true,
+                offsetX: 0,
+                offsetY: 0,
+                tools: {
+                    download: true,
+                    selection: true,
+                    zoom: true,
+                    zoomin: true,
+                    zoomout: true,
+                    pan: true,
+                    reset: true,
+                    customIcons: []
+                },
+                autoSelected: 'zoom'
+            },
+        }
+        var optPeminjamanAlatPerMonth = {
+            annotations: {
+                position: 'back'
+            },
+            dataLabels: {
+                enabled: false
+            },
+            chart: {
+                type: 'bar',
+                height: 500
+            },
+            fill: {
+                opacity: 1
+            },
+            plotOptions: {},
+            series: [{
+                name: 'Total',
+                data: []
+            }],
+            title: {
+                text: 'Grafik Peminjaman Alat Per Bulan',
                 offsetX: 15,
                 style: {
                     fontSize: '20px',
@@ -252,26 +328,37 @@
             xaxis: {},
         };
 
-        var chartPeminjamanPerMonth = new ApexCharts(document.querySelector("#chart"),
+        var chartPeminjamanRuanganPerMonth = new ApexCharts(document.querySelector("#chart"),
             optPeminjamanPerMonth);
+        var chartPeminjamanAlatPerMonth = new ApexCharts(document.querySelector("#chart-alat"),
+            optPeminjamanAlatPerMonth);
         // var chart = new ApexCharts(document.querySelector("#chart"), options);
 
-        chartPeminjamanPerMonth.render();
+        chartPeminjamanRuanganPerMonth.render();
+        chartPeminjamanAlatPerMonth.render();
         // chart.render();
 
         let year = new Date().getFullYear()
-        getPeminjamanPerMonth(chartPeminjamanPerMonth, year)
+        getPeminjamanPerMonth(chartPeminjamanRuanganPerMonth, 'ruangan', year)
+        getPeminjamanPerMonth(chartPeminjamanAlatPerMonth, 'alat', year)
 
-        let select_grafik = document.getElementById("select_grafik")
-        select_grafik.addEventListener('change', (e) => {
+        let select_grafik_ruangan = document.getElementById("select_grafik_ruangan")
+        select_grafik_ruangan.addEventListener('change', (e) => {
             e.preventDefault()
             var values = e.target.value
-            getPeminjamanPerMonth(chartPeminjamanPerMonth, values)
+            getPeminjamanPerMonth(chartPeminjamanRuanganPerMonth, 'ruangan', values)
         })
 
-        function getPeminjamanPerMonth(chart, year) {
+        let select_grafik_alat = document.getElementById("select_grafik_alat")
+        select_grafik_alat.addEventListener('change', (e) => {
+            e.preventDefault()
+            var values = e.target.value
+            getPeminjamanPerMonth(chartPeminjamanAlatPerMonth, 'alat', values)
+        })
+
+        function getPeminjamanPerMonth(chart, type, year) {
             $.ajax({
-                url: `${window.baseurl}/admin/api/peminjaman-ruangan/${year}`,
+                url: `${window.baseurl}/admin/api/peminjaman/${type}/${year}`,
                 method: "GET",
                 dataType: "json", //parse the response data as JSON automatically
                 success: function(response) {

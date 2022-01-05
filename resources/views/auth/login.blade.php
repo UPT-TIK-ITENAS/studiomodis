@@ -87,19 +87,6 @@
                                     <button type="submit" class="btn btn-primary">Sign
                                         in</button>
                                 </div>
-
-                                <div class="d-md-flex justify-content-between mt-4">
-                                    <div class="mb-2 mb-md-0">
-                                        <a href="sign-up.html" class="fs-5">Create An
-                                            Account </a>
-                                    </div>
-                                    <div>
-                                        <a href="forget-password.html"
-                                            class="text-inherit
-                        fs-5">Forgot your password?</a>
-                                    </div>
-
-                                </div>
                             </div>
 
 

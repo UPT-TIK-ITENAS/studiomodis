@@ -103,11 +103,26 @@
                                 </ul>
                             </div>
                         </li>
+                        @php
+                            $ruangan = App\Borrow::with(['ruangan'])
+                                ->whereHas('ruangan')
+                                ->where('status', 0)
+                                ->count();
+                            $alat = App\Borrow::with(['alat'])
+                                ->whereHas('alat')
+                                ->whereDoesntHave('ruangan')
+                                ->where('status', 0)
+                                ->count();
+                        @endphp
                         <li class="nav-item">
                             <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"
                                 data-bs-target="#nav-peminjaman" aria-expanded="false" aria-controls="nav-peminjaman">
                                 <i data-feather="book" class="nav-icon icon-xs me-2">
                                 </i> Peminjaman
+                                @if ($ruangan + $alat > 0)
+                                    <span
+                                        class="ms-2 badge rounded-pill bg-warning text-dark">{{ $ruangan + $alat }}</span>
+                                @endif
                             </a>
 
                             <div id="nav-peminjaman" class="collapse " data-bs-parent="#sideNavbar">
@@ -116,11 +131,19 @@
                                         <a class="nav-link "
                                             href="{{ route('admin.peminjaman.ruangan.index') }}">
                                             Ruangan
+                                            @if ($ruangan > 0)
+                                                <span
+                                                    class="ms-2 badge rounded-pill bg-warning text-dark">{{ $ruangan }}</span>
+                                            @endif
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link " href="{{ route('admin.peminjaman.alat.index') }}">
                                             Alat
+                                            @if ($alat > 0)
+                                                <span
+                                                    class="ms-2 badge rounded-pill bg-warning text-dark">{{ $alat }}</span>
+                                            @endif
                                         </a>
                                     </li>
                                 </ul>

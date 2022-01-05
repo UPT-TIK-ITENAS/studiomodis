@@ -30,7 +30,7 @@ Route::put('/edit-profile', 'ProfileController@update')->name('profile.update');
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/home', 'Admin\HomeController@index')->name('home');
     Route::prefix('api')->name('api.')->group(function () {
-        Route::get('/peminjaman-ruangan/{year}', 'Admin\HomeController@getPeminjamanRuanganPerMonth')->name('peminjaman');
+        Route::get('/peminjaman/{type}/{year}', 'Admin\HomeController@getPeminjamanPerMonth')->name('peminjaman');
     });
 
     Route::get('/ruangan/list', 'Admin\RuanganController@list')->name('ruangan.list');
@@ -83,6 +83,7 @@ Route::name('user.')->middleware(['auth', 'user'])->group(function () {
     Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
         Route::get('/alat', 'User\Peminjaman\AlatController@index')->name('alat.index');
 
+        Route::get('/ruangan/{id}/selesai', 'User\Peminjaman\RuanganController@selesai')->name('ruangan.selesai');
         Route::get('/ruangan/list', 'User\Peminjaman\RuanganController@list')->name('ruangan.list');
         Route::get('/ruangan/alat', 'User\Peminjaman\RuanganController@alat')->name('ruangan.alat');
         Route::get('/ruangan/alat_show/{id}', 'User\Peminjaman\RuanganController@alat_show')->name('ruangan.alat_show');

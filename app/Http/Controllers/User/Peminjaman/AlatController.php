@@ -286,6 +286,7 @@ class AlatController extends Controller
                 $peminjaman->alat()->attach([$pa['id'] => ['qty' => $pa['quantity']]]);
             }
             session()->forget(['peminjaman_alat_' . auth()->user()->id, 'peminjaman_' . auth()->user()->id]);
+            Cart::session(auth()->user()->id)->clear();
             return redirect()->route('user.peminjaman.alat.index')->with('success', 'Berhasil booking alat dan alat!');
         } else {
             return redirect()->route('user.peminjaman.alat.index')->with('danger', 'Mohon untuk pilih alat dan alat terlebih dahulu!');
