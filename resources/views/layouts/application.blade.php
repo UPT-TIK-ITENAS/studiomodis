@@ -247,6 +247,8 @@
         </div>
     </div>
 
+    @stack('modal')
+
     <!-- Scripts -->
     <!-- Libs JS -->
     <script src=" {{ asset('assets/libs/jquery/dist/jquery.min.js') }}"></script>
