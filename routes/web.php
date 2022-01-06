@@ -24,6 +24,7 @@ Route::get('/', function () {
 
 Auth::routes();
 Route::get('/check-ruangan', 'RuanganCheck')->name('check.ruangan');
+Route::get('/check-borrow/{id}', 'BorrowDetailCheck')->name('check.ruangan.detail');
 Route::get('/edit-profile', 'ProfileController@edit')->name('profile.edit');
 Route::put('/edit-profile', 'ProfileController@update')->name('profile.update');
 
