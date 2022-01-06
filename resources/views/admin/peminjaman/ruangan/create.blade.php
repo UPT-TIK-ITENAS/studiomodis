@@ -158,6 +158,107 @@
     </div>
 @endsection
 
+@push('modal')
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mt-4">
+                        <h4 class="mb-1">Detail Peminjaman</h4>
+                    </div>
+                    <div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="nomor_surat" class="col-sm-3 col-form-label form-label">Nomor Surat</label>
+                            <div class="col-md-9 col-12 col-form-label form-label">
+                                <p class="mb-0" id="detail_nomor_surat">
+
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="description" class="col-sm-3 col-form-label form-label">Deskripsi</label>
+                            <div class="col-md-9 col-12 col-form-label form-label">
+                                <p class="mb-0" id="detail_description">
+
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="begin_date" class="col-sm-3 col-form-label form-label">Tanggal Awal</label>
+                            <div class="col-md-9 col-12 col-form-label form-label">
+                                <p class="mb-0" id="detail_begin_date">
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="end_date" class="col-sm-3 col-form-label form-label">Tanggal Akhir</label>
+                            <div class="col-md-9 col-12 col-form-label form-label">
+                                <p class="mb-0" id="detail_end_date">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4 class="mb-1">Detail Ruangan</h4>
+                    </div>
+
+                    <div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="ruangan_nama" class="col-sm-3 col-form-label form-label">Ruangan</label>
+                            <div class="col-md-9 col-12 col-form-label form-label">
+                                <p class="mb-0" id="detail_ruangan_nama">
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="nomor_ruangan" class="col-sm-3 col-form-label form-label">Nomor Ruangan</label>
+                            <div class="col-md-9 col-12 col-form-label form-label">
+                                <p class="mb-0" id="detail_ruangan_nomor">
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="ruangan_deskripsi" class="col-sm-3 col-form-label form-label">Deskripsi
+                                Ruangan</label>
+                            <div class="col-md-9 col-12 col-form-label form-label">
+                                <p class="mb-0" id="detail_ruangan_deskripsi">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4 class="mb-1">Detail Alat</h4>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table" id="alat-table" style="width: 100% !important;">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endpush
+
 @push('scripts')
     <script>
         $(document).ready(function() {
@@ -245,6 +346,48 @@
                         alert('there was an error while fetching events!');
                     },
                 }],
+                eventClick: function(info) {
+                    console.log(info.event.id)
+                    let id = info.event.id
+                    $.ajax({
+                        url: "{{ url('check-borrow') }}/" + id,
+                        type: 'GET',
+                        dataType: 'JSON',
+                        success: function(response) {
+                            console.log(response)
+                            $("#detail_nomor_surat").html(response.nomor_surat)
+                            $("#detail_description").html(response.description)
+                            $("#detail_begin_date").html(response.begin_date)
+                            $("#detail_end_date").html(response.end_date)
+                            $("#detail_ruangan_nama").html(response.ruangan[0].nama)
+                            $("#detail_ruangan_nomor").html(response.ruangan[0].no_ruangan)
+                            $("#detail_ruangan_deskripsi").html(response.ruangan[0].deskripsi)
+                            let responseHTML = '';
+                            for (let index = 0; index < response.alat.length; index++) {
+                                responseHTML += `
+                            <tr>
+                                <td class="">${index+1}</td>
+                                <td class="">${response.alat[index].nama}</td>
+                                <td class="">${response.alat[index].pivot.qty}</td>
+                            </tr>
+                            `
+                            }
+                            $("#table-body").html(responseHTML)
+                            var myModal = new bootstrap.Modal(document.getElementById(
+                                'exampleModal'))
+                            myModal.toggle()
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            Swal.fire({
+                                icon: 'error',
+                                type: 'error',
+                                title: 'Error saat melihat data',
+                                showConfirmButton: true
+                            })
+                        }
+                    })
+
+                }
             });
             calendar.setOption('locale', 'id');
             calendar.render();
