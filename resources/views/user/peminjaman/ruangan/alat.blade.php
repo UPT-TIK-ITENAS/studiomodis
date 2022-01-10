@@ -34,10 +34,19 @@
         <div class="col-xl-12 mt-6">
             <div class="card">
                 <div class="card-body">
-                    <div class=" mb-6">
-                        <h4 class="mb-1">Tabel Alat</h4>
-                        <p>Alat yang tersedia periode tanggal {{ $peminjaman_ruangan['begin_date'] }} hingga
-                            {{ $peminjaman_ruangan['end_date'] }}</p>
+                    <div class="mb-6">
+                        <div class="d-flex align-items-center">
+                            <div class="">
+                                <a href="{{ route('user.peminjaman.ruangan.create') }}" class="btn btn-sm btn-primary"><i
+                                        class="fas fa-arrow-left me-1"></i>Kembali</a>
+                            </div>
+                            <div class="ps-3">
+                                <h4 class="mb-1">Tabel Alat</h4>
+                                <p>Alat yang tersedia periode tanggal {{ $peminjaman_ruangan['begin_date'] }} hingga
+                                    {{ $peminjaman_ruangan['end_date'] }}</p>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="table-responsive">
                         <table class="table" id="alat-table">

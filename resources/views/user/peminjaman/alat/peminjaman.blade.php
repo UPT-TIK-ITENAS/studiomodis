@@ -27,6 +27,9 @@
                     <div class=" mb-6">
                         <h4 class="mb-1">Buat Peminjaman Alat</h4>
                     </div>
+                    @php
+                        $peminjaman = session()->get('peminjaman_' . auth()->user()->id);
+                    @endphp
                     <div>
                         <form action="{{ route('user.peminjaman.alat.storePeminjaman') }}" method="post">
                             @csrf
@@ -40,7 +43,8 @@
                                 <div class="col-md-9 col-12">
                                     <input id="begin_date" class="form-control @error('begin_date') is-invalid @enderror"
                                         type="text" name="begin_date" placeholder="Masukkan tanggal awal"
-                                        value="{{ old('begin_date') }}" required>
+                                        value="{{ old('begin_date') ?? $peminjaman ? $peminjaman['begin_date'] : null }}"
+                                        required>
                                     @error('begin_date')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -57,7 +61,8 @@
                                 <div class="col-md-9 col-12">
                                     <input id="end_date" class="form-control @error('end_date') is-invalid @enderror"
                                         type="text" name="end_date" placeholder="Masukkan tanggal akhir"
-                                        value="{{ old('end_date') }}" required>
+                                        value="{{ old('end_date') ?? $peminjaman ? $peminjaman['end_date'] : null }}"
+                                        required>
                                     @error('end_date')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -73,8 +78,9 @@
 
                                 <div class="col-md-9 col-12">
                                     <input id="jam_awal" class="form-control @error('jam_awal') is-invalid @enderror"
-                                        type="time" name="jam_awal" placeholder="Masukkan jam awal"
-                                        value="{{ old('jam_awal') }}" required>
+                                        type="time" name="jam_awal" placeholder="Masukkan tanggal akhir"
+                                        value="{{ old('jam_awal') ?? $peminjaman ? $peminjaman['jam_awal'] : null }}"
+                                        required>
                                     @error('jam_awal')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -90,8 +96,9 @@
 
                                 <div class="col-md-9 col-12">
                                     <input id="jam_akhir" class="form-control @error('jam_akhir') is-invalid @enderror"
-                                        type="time" name="jam_akhir" placeholder="Masukkan jam akhir"
-                                        value="{{ old('jam_akhir') }}" required>
+                                        type="time" name="jam_akhir" placeholder="Masukkan tanggal akhir"
+                                        value="{{ old('jam_akhir') ?? $peminjaman ? $peminjaman['jam_akhir'] : null }}"
+                                        required>
                                     @error('jam_akhir')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -105,7 +112,9 @@
                                   col-form-label form-label">Deskripsi</label>
                                 <div class="col-md-9 col-12 mb-2 mb-lg-0">
                                     <input type="text" class="form-control @error('description') is-invalid @enderror"
-                                        placeholder="Deskripsi peminjaman" id="description" name="description" required>
+                                        placeholder="Deskripsi peminjaman" id="description"
+                                        value="{{ old('description') ?? $peminjaman ? $peminjaman['description'] : null }}"
+                                        name="description" required>
                                     @error('description')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

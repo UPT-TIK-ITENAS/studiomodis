@@ -33,7 +33,15 @@
             <div class="card">
                 <div class="card-body">
                     <div class=" mb-6">
-                        <h4 class="mb-1">Detail Ruangan</h4>
+                        <div class="d-flex align-items-center">
+                            <div class="">
+                                <a href="{{ route('user.peminjaman.alat.create') }}" class="btn btn-sm btn-primary"><i
+                                        class="fas fa-arrow-left me-1"></i>Kembali</a>
+                            </div>
+                            <div class="ps-3">
+                                <h4 class="mb-1">Detail Informasi</h4>
+                            </div>
+                        </div>
                     </div>
 
                     <div>

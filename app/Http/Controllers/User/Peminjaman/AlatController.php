@@ -15,6 +15,7 @@ class AlatController extends Controller
 {
     public function index()
     {
+        session()->forget(['peminjaman_alat_' . auth()->user()->id, 'peminjaman_' . auth()->user()->id]);
         return view('user.peminjaman.alat.index');
     }
 
@@ -302,6 +303,7 @@ class AlatController extends Controller
 
     public function show($id)
     {
+        session()->forget(['peminjaman_alat_' . auth()->user()->id, 'peminjaman_' . auth()->user()->id]);
         $borrow = Borrow::with(['alat'])->whereHas('alat')->findOrFail($id);
         return view('user.peminjaman.alat.show', compact('borrow'));
     }

@@ -17,6 +17,7 @@ class RuanganController extends Controller
 {
     public function index()
     {
+        session()->forget(['peminjaman_ruangan_' . auth()->user()->id, 'peminjaman_alat_' . auth()->user()->id]);
         return view('user.peminjaman.ruangan.index');
     }
 
@@ -327,6 +328,7 @@ class RuanganController extends Controller
 
     public function show($id)
     {
+        session()->forget(['peminjaman_ruangan_' . auth()->user()->id, 'peminjaman_alat_' . auth()->user()->id]);
         $borrow = Borrow::with(['ruangan', 'alat'])->whereHas('ruangan')->findOrFail($id);
         return view('user.peminjaman.ruangan.show', compact('borrow'));
     }
