@@ -1,7 +1,6 @@
 @extends('layouts.application')
 
 @push('styles')
-
 @endpush
 
 @section('content')
@@ -65,7 +64,7 @@
                             <div class="col-md-9 col-12 col-form-label form-label">
                                 @if ($borrow->status == 0)
                                     <span class="badge rounded-pill bg-warning">
-                                        Menunggu
+                                        Menunggu Approval
                                     </span>
                                 @elseif($borrow->status == 1)
                                     <span class="badge rounded-pill bg-success">

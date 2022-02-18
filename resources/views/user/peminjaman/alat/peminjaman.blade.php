@@ -1,7 +1,21 @@
 @extends('layouts.application')
 
 @push('styles')
+    <style>
+        input[type="time"] {
+            padding-right: 30px;
+        }
 
+        input[type="time"]:invalid+span.validity:after {
+            content: '❌';
+
+        }
+
+        input[type="time"]:valid+span.validity:after {
+            content: "✔️";
+        }
+
+    </style>
 @endpush
 
 @section('content')
@@ -26,6 +40,9 @@
                 <div class="card-body">
                     <div class=" mb-6">
                         <h4 class="mb-1">Buat Peminjaman Alat</h4>
+                        <p>Batas jam awal <b>tidak boleh kurang dari jam 08:00</b>, sedangkan jam akhir
+                            <b>tidak boleh lebih dari jam 17:00</b>
+                        </p>
                     </div>
                     @php
                         $peminjaman = session()->get('peminjaman_' . auth()->user()->id);
@@ -39,7 +56,6 @@
                                     class="col-sm-3
                                   col-form-label form-label">Tanggal
                                     Awal</label>
-
                                 <div class="col-md-9 col-12">
                                     <input id="begin_date" class="form-control @error('begin_date') is-invalid @enderror"
                                         type="text" name="begin_date" placeholder="Masukkan tanggal awal"
@@ -77,10 +93,13 @@
                                     Awal</label>
 
                                 <div class="col-md-9 col-12">
-                                    <input id="jam_awal" class="form-control @error('jam_awal') is-invalid @enderror"
-                                        type="time" name="jam_awal" placeholder="Masukkan tanggal akhir"
-                                        value="{{ old('jam_awal') ?? $peminjaman ? $peminjaman['jam_awal'] : null }}"
-                                        required>
+                                    <div class="d-flex align-items-center">
+                                        <input id="jam_awal" class="form-control @error('jam_awal') is-invalid @enderror"
+                                            type="time" name="jam_awal" placeholder="Masukkan tanggal akhir"
+                                            value="{{ old('jam_awal') ?? $peminjaman ? $peminjaman['jam_awal'] : null }}"
+                                            min="08:00" max="16:00" required>
+                                        <span class="validity ps-3"></span>
+                                    </div>
                                     @error('jam_awal')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -95,15 +114,19 @@
                                     Akhir</label>
 
                                 <div class="col-md-9 col-12">
-                                    <input id="jam_akhir" class="form-control @error('jam_akhir') is-invalid @enderror"
-                                        type="time" name="jam_akhir" placeholder="Masukkan tanggal akhir"
-                                        value="{{ old('jam_akhir') ?? $peminjaman ? $peminjaman['jam_akhir'] : null }}"
-                                        required>
+                                    <div class="d-flex align-items-center">
+                                        <input id="jam_akhir" class="form-control @error('jam_akhir') is-invalid @enderror"
+                                            type="time" name="jam_akhir" placeholder="Masukkan tanggal akhir"
+                                            value="{{ old('jam_akhir') ?? $peminjaman ? $peminjaman['jam_akhir'] : null }}"
+                                            min="09:00" max="17:00" required>
+                                        <span class="validity ps-3"></span>
+                                    </div>
                                     @error('jam_akhir')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
+
                                 </div>
                             </div>
                             <div class="row align-items-center">

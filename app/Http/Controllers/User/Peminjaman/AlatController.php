@@ -53,7 +53,7 @@ class AlatController extends Controller
                     return $row->updated_at->diffForHumans();
                 })
                 ->editColumn('status', function ($row) {
-                    return ($row->status == 0) ? "Menunggu" : ($row->status == 1 ?  "Disetujui" : "Ditolak");
+                    return ($row->status == 0) ? "Menunggu Approval" : ($row->status == 1 ?  "Disetujui" : "Ditolak");
                 })
                 ->addColumn('action', function ($row) {
                     $show_url = route('user.peminjaman.alat.show', $row->id);

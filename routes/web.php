@@ -34,6 +34,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::get('/peminjaman/{type}/{year}', 'Admin\HomeController@getPeminjamanPerMonth')->name('peminjaman');
     });
 
+    Route::get('/sumber-daya/list', 'Admin\SumberDayaController@list')->name('sumber-daya.list');
+    Route::resource('sumber-daya', 'Admin\SumberDayaController');
+
     Route::get('/ruangan/list', 'Admin\RuanganController@list')->name('ruangan.list');
     Route::resource('ruangan', 'Admin\RuanganController');
 

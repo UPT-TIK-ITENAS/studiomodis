@@ -34,7 +34,7 @@ class RuanganController extends Controller
                     return $row->updated_at->diffForHumans();
                 })
                 ->editColumn('status', function ($row) {
-                    return ($row->status == 0) ? "Menunggu" : ($row->status == 1 ?  "Disetujui" : "Ditolak");
+                    return ($row->status == 0) ? "Menunggu Approval" : ($row->status == 1 ?  "Disetujui" : "Ditolak");
                 })
                 ->addColumn('nama_ruangan', function ($row) {
                     return $row->ruangan[0]->nama;

@@ -1,7 +1,21 @@
 @extends('layouts.application')
 
 @push('styles')
+    <style>
+        input[type="time"] {
+            padding-right: 30px;
+        }
 
+        input[type="time"]:invalid+span.validity:after {
+            content: '❌';
+
+        }
+
+        input[type="time"]:valid+span.validity:after {
+            content: "✔️";
+        }
+
+    </style>
 @endpush
 
 @section('content')
@@ -26,6 +40,9 @@
                 <div class="card-body">
                     <div class=" mb-6">
                         <h4 class="mb-1">Buat Peminjaman Ruangan</h4>
+                        <p>Batas jam awal <b>tidak boleh kurang dari jam 08:00</b>, sedangkan jam akhir
+                            <b>tidak boleh lebih dari jam 17:00</b>
+                        </p>
                     </div>
                     @php
                         $peminjaman_ruangan = session()->get('peminjaman_ruangan_' . auth()->user()->id);
@@ -41,16 +58,16 @@
                                     Ruangan</label>
                                 <div class="col-md-9 col-12 mb-2 mb-lg-0">
                                     <select id="id_ruangan" name="id_ruangan"
-                                        class="form-control @error('id_ruangan') is-invalid
-                                    @enderror">
+                                        class="form-control @error('id_ruangan') is-invalid @enderror">
                                         <option></option>
                                         @foreach ($ruangan as $r)
-                                            <option value="{{ $r->id }}" @if (old('id_ruangan') == $r->id) selected
+                                            <option value="{{ $r->id }}"
+                                                @if (old('id_ruangan') == $r->id) selected
                                             @elseif($peminjaman_ruangan ? $peminjaman_ruangan['id_ruangan'] == $r->id : false)
-                                                selected
-                                        @endif>{{ $r->nama }}
-                                        - {{ $r->no_ruangan }}
-                                        </option>
+                                                selected @endif>
+                                                {{ $r->nama }}
+                                                - {{ $r->no_ruangan }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     @error('id_ruangan')
@@ -104,10 +121,13 @@
                                     Awal</label>
 
                                 <div class="col-md-9 col-12">
-                                    <input id="jam_awal" class="form-control @error('jam_awal') is-invalid @enderror"
-                                        type="time" name="jam_awal" placeholder="Masukkan tanggal akhir"
-                                        value="{{ old('jam_awal') ?? $peminjaman_ruangan ? $peminjaman_ruangan['jam_awal'] : null }}"
-                                        required>
+                                    <div class="d-flex align-items-center">
+                                        <input id="jam_awal" class="form-control @error('jam_awal') is-invalid @enderror"
+                                            type="time" name="jam_awal" placeholder="Masukkan tanggal akhir"
+                                            value="{{ old('jam_awal') ?? $peminjaman_ruangan ? $peminjaman_ruangan['jam_awal'] : null }}"
+                                            min="08:00" max="16:00" required>
+                                        <span class="validity ps-3"></span>
+                                    </div>
                                     @error('jam_awal')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -122,15 +142,19 @@
                                     Akhir</label>
 
                                 <div class="col-md-9 col-12">
-                                    <input id="jam_akhir" class="form-control @error('jam_akhir') is-invalid @enderror"
-                                        type="time" name="jam_akhir" placeholder="Masukkan tanggal akhir"
-                                        value="{{ old('jam_akhir') ?? $peminjaman_ruangan ? $peminjaman_ruangan['jam_akhir'] : null }}"
-                                        required>
+                                    <div class="d-flex align-items-center">
+                                        <input id="jam_akhir" class="form-control @error('jam_akhir') is-invalid @enderror"
+                                            type="time" name="jam_akhir" placeholder="Masukkan tanggal akhir"
+                                            value="{{ old('jam_akhir') ?? $peminjaman_ruangan ? $peminjaman_ruangan['jam_akhir'] : null }}"
+                                            min="09:00" max="17:00" required>
+                                        <span class="validity ps-3"></span>
+                                    </div>
                                     @error('jam_akhir')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
+
                                 </div>
                             </div>
                             <div class="row align-items-center">
@@ -333,7 +357,6 @@
         let ruangan = null;
         $("#id_ruangan").on("select2:select", function(e) {
             ruangan = $(e.currentTarget).val();
-            console.log(ruangan)
             loadCalendarEvents(ruangan)
         });
         let CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content')
@@ -359,7 +382,6 @@
                     },
                 }],
                 eventClick: function(info) {
-                    console.log(info.event.id)
                     let id = info.event.id
                     $.ajax({
                         url: "{{ url('check-borrow') }}/" + id,

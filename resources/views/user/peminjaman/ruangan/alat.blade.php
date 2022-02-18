@@ -1,7 +1,6 @@
 @extends('layouts.application')
 
 @push('styles')
-
 @endpush
 
 @section('content')
@@ -20,7 +19,7 @@
                     </div>
                     <div>
                         <button class="btn btn-white" id="btn-cart" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal">Keranjang <span id="cart-count">({{ $cart->count() }})</span>
+                            data-bs-target="#exampleModal">Alat <span id="cart-count">({{ $cart->count() }})</span>
                         </button>
                         @if ($cart->count() > 0)
                             <a href="{{ route('user.peminjaman.ruangan.confirm') }}" class="btn btn-info text-white">

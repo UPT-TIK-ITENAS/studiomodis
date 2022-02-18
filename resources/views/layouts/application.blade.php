@@ -27,6 +27,9 @@
         href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.1.1/dist/select2-bootstrap-5-theme.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css"
         integrity="sha256-zsz1FbyNCtIE2gIB+IyWV7GbCLyKJDTBRz0qQaBSLxM=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.min.css"
+        integrity="sha512-EZSUkJWTjzDlspOoPSpUFR0o0Xy7jdzW//6qhUkoZ9c4StFkVsp9fbbd0O06p9ELS3H486m4wmrCELjza4JEog=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     @stack('styles')
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css">
@@ -64,6 +67,13 @@
                         <!-- Nav item -->
                         <li class="nav-item">
                             <div class="navbar-heading">Admin</div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="{{ route('admin.user.index') }}">
+                                <i data-feather="file" class="nav-icon icon-xs me-2">
+                                </i>
+                                Sumber Daya
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link " href="{{ route('admin.user.index') }}">
@@ -275,6 +285,9 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales-all.min.js"
         integrity="sha256-GcByKJnun2NoPMzoBsuCb4O2MKiqJZLlHTw3PJeqSkI=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
+        integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{{ asset('assets/js/index.js') }}"></script>
     @stack('scripts')
     <script src=" {{ asset('assets/js/theme.min.js') }}"></script>

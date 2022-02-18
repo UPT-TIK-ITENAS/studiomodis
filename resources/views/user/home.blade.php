@@ -1,7 +1,6 @@
 @extends('layouts.application')
 
 @push('styles')
-
 @endpush
 
 @section('content')
@@ -36,7 +35,7 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col-6">
-                                <h4 class="text-warning">Menunggu</h4>
+                                <h4 class="text-warning">Menunggu Approval</h4>
                             </div>
                             <div class="col-6">
                                 <h4 class="text-warning">{{ $peminjaman_ruangan_m }}</h4>
@@ -69,7 +68,7 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col-6">
-                                <h4 class="text-warning">Menunggu</h4>
+                                <h4 class="text-warning">Menunggu Approval</h4>
                             </div>
                             <div class="col-6">
                                 <h4 class="text-warning">{{ $peminjaman_alat_m }}</h4>
@@ -88,10 +87,8 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 
 @push('scripts')
-
 @endpush
