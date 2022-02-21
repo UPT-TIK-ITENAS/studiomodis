@@ -1,11 +1,15 @@
 @extends('layouts.application')
 
 @push('styles')
-
 @endpush
 
 @section('content')
     <div class="row">
+        @if (session('success'))
+            <div class="success-session" data-flashdata="{{ session('success') }}"></div>
+        @elseif(session('error'))
+            <div class="error-session" data-flashdata="{{ session('error') }}"></div>
+        @endif
         <div class="col-lg-12 col-md-12 col-12">
             <!-- Page header -->
             <div>
@@ -23,7 +27,7 @@
                         <h4 class="mb-1">Buat Alat</h4>
                     </div>
                     <div>
-                        <form action="{{ route('admin.alat.store') }}" method="post">
+                        <form action="{{ route('admin.alat.store') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <!-- row -->
                             <div class="mb-3 row">
@@ -37,6 +41,21 @@
                                         placeholder="Nama alat" name="nama" id="nama" required>
                                     @error('nama')
                                         <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="photo"
+                                    class="col-sm-3
+                                  col-form-label form-label">Foto</label>
+
+                                <div class="col-md-9 col-12">
+                                    <input type="file" class="form-control dropify" placeholder="Nama alat" name="photo"
+                                        id="photo" data-allowed-file-extensions="png jpg jpeg bmp webp" required>
+                                    @error('photo')
+                                        <span class="text-danger fw-bold" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
@@ -80,8 +99,7 @@
 
                                 <div class="col-md-9 col-12">
                                     <select id="kategori_alat_id" name="kategori_alat_id"
-                                        class="form-control @error('kategori_alat_id') is-invalid
-                                    @enderror">
+                                        class="form-control @error('kategori_alat_id') is-invalid @enderror">
                                         <option></option>
                                         @foreach ($kategori as $k)
                                             <option value="{{ $k->id }}">{{ $k->nama }}</option>
@@ -101,8 +119,7 @@
                                   col-form-label form-label">Status</label>
                                 <div class="col-md-9 col-12 mb-2 mb-lg-0">
                                     <select id="status" name="status"
-                                        class="form-control @error('status') is-invalid
-                                    @enderror">
+                                        class="form-control @error('status') is-invalid @enderror">
                                         <option></option>
                                         <option value="1">Aktif</option>
                                         <option value="0">Tidak Aktif</option>
@@ -140,10 +157,20 @@
                     type: 'success'
                 })
             }
+            let flashdataerror = $('.error-session').data('flashdata');
+            if (flashdataerror) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: flashdataerror,
+                    type: 'error'
+                })
+            }
             $("#status, #kategori_alat_id").select2({
                 placeholder: "- Pilih Salah Satu -",
                 theme: "bootstrap-5",
             })
+            $('.dropify').dropify()
         })
     </script>
 @endpush

@@ -26,6 +26,13 @@ class AlatController extends Controller
             $data = Alat::with(['kategori'])->latest()->get();
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->editColumn('photo', function ($row) {
+                    if ($row->photo == null) {
+                        return '<img src="https://via.placeholder.com/150" data-src="https://via.placeholder.com/150" alt="Square placeholder image"/>';
+                    } else {
+                        return '<img src="' . asset('assets/images/alat/' . $row->photo) . '" style="max-width:150px;max-height:150px;" />';
+                    }
+                })
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->diffForHumans();
                 })
@@ -54,7 +61,7 @@ class AlatController extends Controller
                         ';
                     return $actionBtn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action', 'photo'])
                 ->make(true);
         }
     }
@@ -84,17 +91,27 @@ class AlatController extends Controller
             'deskripsi' => 'required',
             'kategori_alat_id' => 'required',
             'status' => 'required',
+            'photo' => 'required|file|mimes:jpeg,jpg,png,webp,bmp'
         ]);
-
-        Alat::create([
-            'nama' => $request->nama,
-            'stok' => $request->stok,
-            'kategori_alat_id' => $request->kategori_alat_id,
-            'deskripsi' => $request->deskripsi,
-            'status' => $request->status,
-        ]);
-
-        return redirect()->route('admin.alat.index')->with('success', 'Alat berhasil dibuat!');
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photo_name = $photo->getClientOriginalName();
+            $photo_name = preg_replace('!\s+!', ' ', $photo_name);
+            $photo_name = str_replace(' ', '_', $photo_name);
+            $photo_name = str_replace('%', '', $photo_name);
+            $photo->move(public_path('assets/images/alat'), $photo_name);
+            Alat::create([
+                'nama' => $request->nama,
+                'stok' => $request->stok,
+                'kategori_alat_id' => $request->kategori_alat_id,
+                'deskripsi' => $request->deskripsi,
+                'photo' => $photo_name,
+                'status' => $request->status,
+            ]);
+            return redirect()->route('admin.alat.index')->with('success', 'Alat berhasil dibuat!');
+        } else {
+            return redirect()->route('admin.alat.create')->with('error', 'Upload foto terlebih dahulu!');
+        }
     }
 
     /**
@@ -135,8 +152,22 @@ class AlatController extends Controller
             'deskripsi' => 'required',
             'kategori_alat_id' => 'required',
             'status' => 'required',
+            'photo' => 'sometimes|required|file|mimes:jpeg,jpg,png,webp,bmp'
         ]);
-
+        $photo_name = $alat->photo;
+        if ($request->hasFile('photo')) {
+            if ($alat->photo != null) {
+                if (file_exists('./assets/images/alat/' . $photo_name)) {
+                    unlink(public_path('assets/images/alat/' . $photo_name));
+                }
+            }
+            $photo = $request->file('photo');
+            $photo_name = $photo->getClientOriginalName();
+            $photo_name = preg_replace('!\s+!', ' ', $photo_name);
+            $photo_name = str_replace(' ', '_', $photo_name);
+            $photo_name = str_replace('%', '', $photo_name);
+            $photo->move(public_path($this->url_dokumen), $photo_name);
+        }
         $alat->update([
             'nama' => $request->nama,
             'stok' => $request->stok,
@@ -156,6 +187,12 @@ class AlatController extends Controller
      */
     public function destroy(Alat $alat)
     {
+        $photo_name = $alat->photo;
+        if ($alat->photo != null) {
+            if (file_exists('./assets/images/alat/' . $photo_name)) {
+                unlink(public_path('assets/images/alat/' . $photo_name));
+            }
+        }
         $alat->delete();
         return response()->json(['status' => TRUE]);
     }

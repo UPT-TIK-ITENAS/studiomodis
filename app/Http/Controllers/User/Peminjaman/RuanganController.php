@@ -197,6 +197,13 @@ class RuanganController extends Controller
                 $data = Alat::with(['kategori'])->latest()->get();
                 return DataTables::of($data)
                     ->addIndexColumn()
+                    ->editColumn('photo', function ($row) {
+                        if ($row->photo == null) {
+                            return '<img src="https://via.placeholder.com/150" data-src="https://via.placeholder.com/150" alt="Square placeholder image"/>';
+                        } else {
+                            return '<img src="' . asset('assets/images/alat/' . $row->photo) . '" style="max-width:150px;max-height:150px;" />';
+                        }
+                    })
                     ->editColumn('stok', function ($row) use ($peminjaman_ruangan) {
                         $alat = Alat::with(['borrow' => function ($query) use ($peminjaman_ruangan) {
                             $query->whereDate('end_date', '>=', $peminjaman_ruangan['begin_date'])->whereDate('begin_date', '<=', $peminjaman_ruangan['end_date']);
@@ -230,7 +237,7 @@ class RuanganController extends Controller
                             ';
                         return $actionBtn;
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['action', 'photo'])
                     ->make(true);
             } else if ($type == "confirm") {
                 return DataTables::of(Cart::session(auth()->user()->id)->getContent())
@@ -339,13 +346,20 @@ class RuanganController extends Controller
         if ($request->ajax()) {
             return DataTables::of($borrow->alat)
                 ->addIndexColumn()
+                ->editColumn('photo', function ($row) {
+                    if ($row->photo == null) {
+                        return '<img src="https://via.placeholder.com/150" data-src="https://via.placeholder.com/150" alt="Square placeholder image"/>';
+                    } else {
+                        return '<img src="' . asset('assets/images/alat/' . $row->photo) . '" style="max-width:150px;max-height:150px;" />';
+                    }
+                })
                 ->addColumn('nama', function ($row) {
                     return $row->nama;
                 })
                 ->addColumn('qty', function ($row) {
                     return $row->pivot->qty;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action', 'photo'])
                 ->make(true);
         }
     }

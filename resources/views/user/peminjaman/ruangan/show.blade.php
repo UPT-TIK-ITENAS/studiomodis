@@ -126,6 +126,7 @@
                                 <tr>
                                     <th scope="col">No</th>
                                     <th scope="col">Nama</th>
+                                    <th scope="col">Foto</th>
                                     <th scope="col">Quantity</th>
                                 </tr>
                             </thead>
@@ -158,6 +159,10 @@
                 {
                     data: 'nama',
                     name: 'nama'
+                },
+                {
+                    data: 'photo',
+                    name: 'photo'
                 },
                 {
                     data: 'qty',

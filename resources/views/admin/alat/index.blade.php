@@ -1,7 +1,6 @@
 @extends('layouts.application')
 
 @push('styles')
-
 @endpush
 
 @section('content')
@@ -34,6 +33,7 @@
                                 <tr>
                                     <th scope="col">Nomor</th>
                                     <th scope="col">Nama Alat</th>
+                                    <th scope="col">Foto</th>
                                     <th scope="col">Stok</th>
                                     <th scope="col">Deskripsi</th>
                                     <th scope="col">Kategori</th>
@@ -84,6 +84,10 @@
                 {
                     data: 'nama',
                     name: 'nama'
+                },
+                {
+                    data: 'photo',
+                    name: 'photo'
                 },
                 {
                     data: 'stok',

@@ -51,6 +51,7 @@
                                     <tr>
                                         <th scope="col">No</th>
                                         <th scope="col">Nama</th>
+                                        <th scope="col">Foto</th>
                                         <th scope="col">Kategori</th>
                                         <th scope="col">Stok</th>
                                         <th scope="col">Aksi</th>
@@ -137,6 +138,10 @@
                     {
                         data: 'nama',
                         name: 'nama'
+                    },
+                    {
+                        data: 'photo',
+                        name: 'photo'
                     },
                     {
                         data: 'kategori',
