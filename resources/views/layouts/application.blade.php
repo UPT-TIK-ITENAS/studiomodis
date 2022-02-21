@@ -250,7 +250,10 @@
                 </nav>
             </div>
             <!-- Container fluid -->
-            <div class="bg-primary pt-10 pb-21"></div>
+            <div class="pt-10 pb-21" style="background: #4e54c8;
+            background: -webkit-linear-gradient(to right, #4e54c8, #8f94fb);
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            "></div>
             <div class="container-fluid mt-n22 px-6">
                 @yield('content')
             </div>
