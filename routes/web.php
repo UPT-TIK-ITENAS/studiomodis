@@ -1,7 +1,9 @@
 <?php
 
+use App\Borrow;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +22,16 @@ Route::get('/', function () {
     } else {
         return redirect()->to('/home');
     }
+});
+
+Route::get('send-mail', function () {
+
+    $borrows = Borrow::with(['ruangan', 'alat'])->findOrFail(3);
+    $status = ($borrows->status == 1) ? "Disetujui" : "Ditolak";
+
+    Mail::to('mmuqiit.f14@gmail.com')->send(new App\Mail\PeminjamanApprove($borrows, $status));
+
+    dd("Email is Sent.");
 });
 
 Auth::routes();
@@ -79,6 +91,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::get('/ruangan/alat_show/{id}', 'Admin\Peminjaman\RuanganController@alat_show')->name('ruangan.alat_show');
         Route::resource('ruangan', 'Admin\Peminjaman\RuanganController');
     });
+
+    Route::get('/konsultasi/list', 'Admin\KonsultasiController@list')->name('konsultasi.list');
+    Route::get('/konsultasi/pic', 'Admin\KonsultasiController@pic')->name('konsultasi.pic');
+    Route::resource('konsultasi', 'Admin\KonsultasiController');
 });
 
 Route::name('user.')->middleware(['auth', 'user'])->group(function () {
@@ -113,4 +129,7 @@ Route::name('user.')->middleware(['auth', 'user'])->group(function () {
 
         Route::resource('alat', 'User\Peminjaman\AlatController');
     });
+
+    Route::get('/konsultasi/list', 'User\KonsultasiController@list')->name('konsultasi.list');
+    Route::resource('konsultasi', 'User\KonsultasiController');
 });

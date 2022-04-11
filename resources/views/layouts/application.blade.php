@@ -52,7 +52,7 @@
             <div class="nav-scroller">
                 <!-- Brand logo -->
                 <a class="navbar-brand" href="{{ route('admin.home') }}">
-                    <p>STUDIO MODIS</p>
+                    <p>SIMODIS</p>
                 </a>
                 <!-- Navbar nav -->
                 <ul class="navbar-nav flex-column" id="sideNavbar">
@@ -159,6 +159,13 @@
                                 </ul>
                             </div>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="{{ route('admin.konsultasi.index') }}">
+                                <i data-feather="bookmark" class="nav-icon icon-xs me-2">
+                                </i>
+                                Konsultasi
+                            </a>
+                        </li>
                     @else
                         <li class="nav-item">
                             <a class="nav-link has-arrow  active " href="{{ route('user.home') }}">
@@ -187,6 +194,11 @@
                                     </li>
                                 </ul>
                             </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link has-arrow" href="{{ route('user.konsultasi.index') }}">
+                                <i data-feather="bookmark" class="nav-icon icon-xs me-2"></i> Konsultasi
+                            </a>
                         </li>
                     @endif
 
