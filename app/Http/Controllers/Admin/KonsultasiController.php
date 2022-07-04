@@ -38,7 +38,8 @@ class KonsultasiController extends Controller
                 return ($row->status == 1) ? "Pre Production" : ($row->status == 2 ?  "Production" : "Post Production");
             })
             ->addColumn('pic_text', function ($row) {
-                return $row->pic ? $row->pic->name : '-';
+                $data = DB::table('users')->where('id', $row->pic_id)->join('pegawai', 'pegawai.nik', '=', 'users.username')->first();
+                return $row->pic_id ? $data->namapegawai : '-';
             })
             ->addColumn('action', function ($row) {
                 $actionBtn = '
@@ -80,7 +81,7 @@ class KonsultasiController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.konsultasi.create');
     }
 
     /**
@@ -125,9 +126,20 @@ class KonsultasiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Konsultasi $konsultasi)
     {
-        //
+        $request->validate([
+            'pic' => 'required',
+        ]);
+
+        $konsultasi->update([
+            'pic_id' => $request->pic,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'PIC berhasil diubah'
+        ]);
     }
 
     /**

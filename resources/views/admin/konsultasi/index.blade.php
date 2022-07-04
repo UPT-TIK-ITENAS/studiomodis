@@ -109,16 +109,17 @@
                                 <a href="#" target="_blank" id="materi" class="btn btn-primary">Lihat Materi</a>
                             </div>
                         </div>
-                        <div class="row align-items-center">
+                        <div class="mb-3 row align-items-center">
                             <label for="deskripsi"
                                 class="col-sm-3
                               col-form-label form-label">Deskripsi</label>
                             <div class="col-md-9 col-12 mb-2 mb-lg-0">
-                                <input type="text" class="form-control @error('deskripsi') is-invalid @enderror"
-                                    placeholder="Deskripsi" id="deskripsi" name="deskripsi" value="" disabled>
+                                <textarea name="deskripsi" id="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" cols="30"
+                                    rows="10" disabled></textarea>
+
                             </div>
                         </div>
-                        <div class="row align-items-center">
+                        <div class="mb-3 row align-items-center">
                             <label for="deskripsi"
                                 class="col-sm-3
                               col-form-label form-label">PIC</label>
@@ -291,5 +292,38 @@
                 },
             });
         });
+        $("#saveBtn").on('click', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "{{ url('/admin/konsultasi') }}/" + id,
+                type: 'POST',
+                data: {
+                    _token: CSRF_TOKEN,
+                    _method: 'PUT',
+                    pic: $('#pic').val(),
+                },
+                dataType: 'JSON',
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire(
+                            'Updated!',
+                            `Konsultasi berhasil diupdate.`,
+                            'success'
+                        ).then((result) => {
+                            reload_table(null, true)
+                            $('#editModal').modal('hide');
+                        })
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        type: 'error',
+                        title: 'Error saat update data',
+                        showConfirmButton: true
+                    })
+                }
+            })
+        })
     </script>
 @endpush

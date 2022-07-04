@@ -10,7 +10,7 @@
             <div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="mb-2 mb-lg-0">
-                        <h3 class="mb-0 fw-bold text-white">Buat Peminjaman Ruangan</h3>
+                        <h3 class="mb-0 fw-bold text-white">Konsultasi</h3>
                     </div>
                 </div>
             </div>
@@ -82,9 +82,8 @@
                                     class="col-sm-3
                                   col-form-label form-label">Deskripsi</label>
                                 <div class="col-md-9 col-12 mb-2 mb-lg-0">
-                                    <input type="text" class="form-control @error('deskripsi') is-invalid @enderror"
-                                        placeholder="Deskripsi Ruangan" id="deskripsi" name="deskripsi"
-                                        value="{{ old('deskripsi') }}" required>
+                                    <textarea name="deskripsi" id="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" cols="30"
+                                        rows="10" required>{{ old('deskripsi') }}</textarea>
                                     @error('deskripsi')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

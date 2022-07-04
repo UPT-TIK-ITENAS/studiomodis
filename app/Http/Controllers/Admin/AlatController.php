@@ -166,17 +166,27 @@ class AlatController extends Controller
             $photo_name = preg_replace('!\s+!', ' ', $photo_name);
             $photo_name = str_replace(' ', '_', $photo_name);
             $photo_name = str_replace('%', '', $photo_name);
-            $photo->move(public_path($this->url_dokumen), $photo_name);
-        }
-        $alat->update([
-            'nama' => $request->nama,
-            'stok' => $request->stok,
-            'kategori_alat_id' => $request->kategori_alat_id,
-            'deskripsi' => $request->deskripsi,
-            'status' => $request->status,
-        ]);
+            $photo->move(public_path('assets/images/alat/'), $photo_name);
+            $alat->update([
+                'nama' => $request->nama,
+                'stok' => $request->stok,
+                'kategori_alat_id' => $request->kategori_alat_id,
+                'deskripsi' => $request->deskripsi,
+                'status' => $request->status,
+                'photo' => $photo_name
+            ]);
+            return redirect()->route('admin.alat.index')->with('success', 'Alat berhasil diubah!');
+        } else {
+            $alat->update([
+                'nama' => $request->nama,
+                'stok' => $request->stok,
+                'kategori_alat_id' => $request->kategori_alat_id,
+                'deskripsi' => $request->deskripsi,
+                'status' => $request->status
+            ]);
 
-        return redirect()->route('admin.alat.index')->with('success', 'Alat berhasil diubah!');
+            return redirect()->route('admin.alat.index')->with('success', 'Alat berhasil diubah!');
+        }
     }
 
     /**
