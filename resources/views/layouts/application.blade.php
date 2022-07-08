@@ -69,7 +69,7 @@
                             <div class="navbar-heading">Admin</div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="{{ route('admin.user.index') }}">
+                            <a class="nav-link " href="{{ route('admin.sumber-daya.index') }}">
                                 <i data-feather="file" class="nav-icon icon-xs me-2">
                                 </i>
                                 Sumber Daya
@@ -126,7 +126,8 @@
                         @endphp
                         <li class="nav-item">
                             <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"
-                                data-bs-target="#nav-peminjaman" aria-expanded="false" aria-controls="nav-peminjaman">
+                                data-bs-target="#nav-peminjaman" aria-expanded="false"
+                                aria-controls="nav-peminjaman">
                                 <i data-feather="book" class="nav-icon icon-xs me-2">
                                 </i> Peminjaman
                                 @if ($ruangan + $alat > 0)
@@ -138,8 +139,7 @@
                             <div id="nav-peminjaman" class="collapse " data-bs-parent="#sideNavbar">
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
-                                        <a class="nav-link "
-                                            href="{{ route('admin.peminjaman.ruangan.index') }}">
+                                        <a class="nav-link " href="{{ route('admin.peminjaman.ruangan.index') }}">
                                             Ruangan
                                             @if ($ruangan > 0)
                                                 <span
@@ -174,7 +174,8 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"
-                                data-bs-target="#nav-peminjaman" aria-expanded="false" aria-controls="nav-peminjaman">
+                                data-bs-target="#nav-peminjaman" aria-expanded="false"
+                                aria-controls="nav-peminjaman">
                                 <i data-feather="book" class="nav-icon icon-xs me-2">
                                 </i> Peminjaman
                             </a>
@@ -182,8 +183,7 @@
                             <div id="nav-peminjaman" class="collapse " data-bs-parent="#sideNavbar">
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
-                                        <a class="nav-link "
-                                            href="{{ route('user.peminjaman.ruangan.index') }}">
+                                        <a class="nav-link " href="{{ route('user.peminjaman.ruangan.index') }}">
                                             Ruangan
                                         </a>
                                     </li>
@@ -216,8 +216,8 @@
 
                         <!-- List -->
                         <li class="dropdown ms-2">
-                            <a class="rounded-circle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
+                            <a class="rounded-circle" href="#" role="button" id="dropdownUser"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <div class="avatar avatar-md avatar-indicators avatar-online">
                                     <img alt="avatar" src=" {{ asset('assets/images/avatar/avatar-user.png') }}"
                                         class="rounded-circle" />
@@ -244,7 +244,8 @@
                                     </li>
 
                                     <li>
-                                        <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                        <a class="dropdown-item" href="{{ route('logout') }}"
+                                            onclick="event.preventDefault();
                                                       document.getElementById('logout-form').submit();">
                                             <i class="me-2 icon-xxs dropdown-item-icon" data-feather="power"></i>Sign
                                             Out
@@ -262,10 +263,12 @@
                 </nav>
             </div>
             <!-- Container fluid -->
-            <div class="pt-10 pb-21" style="background: #4e54c8;
+            <div class="pt-10 pb-21"
+                style="background: #4e54c8;
             background: -webkit-linear-gradient(to right, #4e54c8, #8f94fb);
             background: linear-gradient(to right, #4e54c8, #8f94fb);
-            "></div>
+            ">
+            </div>
             <div class="container-fluid mt-n22 px-6">
                 @yield('content')
             </div>
