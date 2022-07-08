@@ -72,7 +72,8 @@
                                   col-form-label form-label">Materi</label>
 
                                 <div class="col-md-9 col-12">
-                                    <a href="#" target="_blank" id="materi" class="btn btn-primary">Lihat
+                                    <a href="{{ asset('assets/materi/' . $konsultasi->materi) }}" target="_blank"
+                                        id="materi" class="btn btn-primary">Lihat
                                         Materi</a>
                                 </div>
                             </div>
