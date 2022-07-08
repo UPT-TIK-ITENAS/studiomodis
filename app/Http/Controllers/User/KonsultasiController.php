@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Konsultasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class KonsultasiController extends Controller
@@ -34,7 +36,8 @@ class KonsultasiController extends Controller
                 return ($row->status == 1) ? "Pre Production" : ($row->status == 2 ?  "Production" : "Post Production");
             })
             ->addColumn('pic_text', function ($row) {
-                return $row->pic ? $row->pic->name : '-';
+                $pic = DB::table('users')->join('pegawai', 'pegawai.nik', '=', 'users.username')->join('unitjabatan', 'unitjabatan.idpegawai', '=', 'pegawai.idpegawai')->where('users.id', '=', $row->pic_id)->first();
+                return $pic ? $pic->namapegawai : '-';
             })
             ->addColumn('action', function ($row) {
                 $show_url = route('user.konsultasi.show', $row->id);
@@ -106,7 +109,16 @@ class KonsultasiController extends Controller
      */
     public function show($id)
     {
-        //
+        $konsultasi = Konsultasi::findOrFail($id);
+        $pic = DB::table('users')->join('pegawai', 'pegawai.nik', '=', 'users.username')->join('unitjabatan', 'unitjabatan.idpegawai', '=', 'pegawai.idpegawai')->where('users.id', '=', $konsultasi->pic_id)->first();
+        // <option value="1" @if (old('status') == 1) selected @endif>Pre-Production
+        // </option>
+        // <option value="2" @if (old('status') == 2) selected @endif>Production
+        // </option>
+        // <option value="3" @if (old('status') == 3) selected @endif>Post-Production
+        // </option>
+        $status = ($konsultasi->status == 1) ? 'Pre-Production' : (($konsultasi->status == 2) ? 'Production' : 'Post-Production');
+        return view('user.konsultasi.show', compact('konsultasi', 'pic', 'status'));
     }
 
     /**

@@ -24,46 +24,21 @@
             <div class="card">
                 <div class="card-body">
                     <div class=" mb-6">
-                        <h4 class="mb-1">Buat Data Konsultasi</h4>
+                        <h4 class="mb-1">Show Data Konsultasi</h4>
                     </div>
                     <div>
-                        <form action="{{ route('admin.konsultasi.update', $konsultasi->id) }}" method="post"
-                            enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
+                        <form>
                             <div class="mb-3 row align-items-center">
                                 <label for="status" class="col-sm-3 col-form-label form-label">Status</label>
                                 <div class="col-md-9 col-12 mb-2 mb-lg-0">
-                                    <select id="status" name="status"
-                                        class="form-control @error('status') is-invalid @enderror">
-                                        <option value="1" @if ($konsultasi->status == 1) selected @endif>
-                                            Pre-Production
-                                        </option>
-                                        <option value="2" @if ($konsultasi->status == 2) selected @endif>Production
-                                        </option>
-                                        <option value="3" @if ($konsultasi->status == 3) selected @endif>
-                                            Post-Production
-                                        </option>
-                                    </select>
-                                    @error('status')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                    <p>{{ $status }}</p>
                                 </div>
                             </div>
                             <div class="mb-3 row">
                                 <label for="subjek" class="col-sm-3 col-form-label form-label">Subjek</label>
 
                                 <div class="col-md-9 col-12">
-                                    <input id="subjek" class="form-control @error('subjek') is-invalid @enderror"
-                                        type="text" name="subjek" placeholder="Masukkan subjek"
-                                        value="{{ $konsultasi->subjek ?? old('subjek') }}" required>
-                                    @error('subjek')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                    <p>{{ $konsultasi->subjek }}</p>
                                 </div>
                             </div>
                             <div class="mb-3 row">
@@ -72,7 +47,8 @@
                                   col-form-label form-label">Materi</label>
 
                                 <div class="col-md-9 col-12">
-                                    <a href="#" target="_blank" id="materi" class="btn btn-primary">Lihat
+                                    <a href="{{ asset('assets/materi/' . $konsultasi->materi) }}" target="_blank"
+                                        id="materi" class="btn btn-primary">Lihat
                                         Materi</a>
                                 </div>
                             </div>
@@ -82,20 +58,11 @@
                                   col-form-label form-label">PIC</label>
 
                                 <div class="col-md-9 col-12">
-                                    <select id="pic" name="pic"
-                                        class="form-control @error('pic') is-invalid @enderror">
-                                        @foreach ($pic as $p)
-                                            <option value=""></option>
-                                            <option value="{{ $p->id }}"
-                                                @if ($konsultasi->pic_id == $p->id) selected @endif>{{ $p->namapegawai }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('pic')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                    @if ($pic == null)
+                                        <p>-</p>
+                                    @else
+                                        <p>{{ $pic->namapegawai }}</p>
+                                    @endif
                                 </div>
                             </div>
                             <div class="row align-items-center">
@@ -103,17 +70,7 @@
                                     class="col-sm-3
                                   col-form-label form-label">Deskripsi</label>
                                 <div class="col-md-9 col-12 mb-2 mb-lg-0">
-                                    <textarea name="deskripsi" id="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" cols="30"
-                                        rows="10" required>{{ $konsultasi->deskripsi ?? old('deskripsi') }}</textarea>
-                                    @error('deskripsi')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                                <!-- list -->
-                                <div class="offset-md-3 col-md-9 col-12 mt-4">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <p>{{ $konsultasi->deskripsi }}</p>
                                 </div>
                             </div>
                         </form>

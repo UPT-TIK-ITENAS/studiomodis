@@ -34,11 +34,13 @@
                                 <div class="col-md-9 col-12 mb-2 mb-lg-0">
                                     <select id="status" name="status"
                                         class="form-control @error('status') is-invalid @enderror">
-                                        <option value="1" @if (old('status') == 1) selected @endif>Pre-Production
+                                        <option value="1" @if (old('status') == 1) selected @endif>
+                                            Pre-Production
                                         </option>
                                         <option value="2" @if (old('status') == 2) selected @endif>Production
                                         </option>
-                                        <option value="3" @if (old('status') == 3) selected @endif>Post-Production
+                                        <option value="3" @if (old('status') == 3) selected @endif>
+                                            Post-Production
                                         </option>
                                     </select>
                                     @error('status')

@@ -42,8 +42,9 @@ class KonsultasiController extends Controller
                 return $row->pic_id ? $data->namapegawai : '-';
             })
             ->addColumn('action', function ($row) {
+                $url = route('admin.konsultasi.edit', $row->id);
                 $actionBtn = '
-                <a class="btn btn-info btn-sm edit_record" data-id="' . $row->id . '">
+                <a class="btn btn-info btn-sm" href="' . $url . '">
                     <i class="fa fa-edit"></i>
                 </a>
                 <a class="btn btn-danger btn-sm hapus_record" data-id="' . $row->id . '" data-subjek="' . $row->subjek . '" href="#">
@@ -117,6 +118,8 @@ class KonsultasiController extends Controller
      */
     public function edit(Konsultasi $konsultasi)
     {
+        $pic = DB::table('users')->join('pegawai', 'pegawai.nik', '=', 'users.username')->join('unitjabatan', 'unitjabatan.idpegawai', '=', 'pegawai.idpegawai')->where('unitjabatan.idunit', '=', 31)->orWhere('users.id', '=', 469)->get();
+        return view('admin.konsultasi.edit', compact('konsultasi', 'pic'));
     }
 
     /**
@@ -129,17 +132,20 @@ class KonsultasiController extends Controller
     public function update(Request $request, Konsultasi $konsultasi)
     {
         $request->validate([
+            'status' => 'required|in:1,2,3',
+            'subjek' => 'required',
+            'deskripsi' => 'required',
             'pic' => 'required',
         ]);
 
         $konsultasi->update([
             'pic_id' => $request->pic,
+            'subjek' => $request->subjek,
+            'deskripsi' => $request->deskripsi,
+            'status' => $request->status,
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'PIC berhasil diubah'
-        ]);
+        return redirect()->route('admin.konsultasi.index')->with('success', 'Konsultasi berhasil diubah!');
     }
 
     /**
